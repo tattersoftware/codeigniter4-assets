@@ -1,0 +1,35 @@
+<?php namespace Config;
+
+/***
+*
+* This file contains example values to override or augment default library behavior.
+* Recommended usage:
+*	1. Copy the file to app/Config/Assets.php
+*	2. Set any override variables
+*	3. Add additional route-specific assets to $routes
+*	4. Remove any lines to fallback to defaults
+*
+***/
+
+use CodeIgniter\Config\BaseConfig;
+
+class Assets extends BaseConfig
+{
+	// override location of asset files in the filesystem
+	public $fsbase  = FCPATH."assets/";
+	
+	// override location of asset files URL
+	public $webbase = "https://example.com/assets/";
+	
+	// additional assets to load per route - no leading/trailing slashes
+	public $routes = [
+		"" => [
+			"bootstrap/dist/css/bootstrap.min.css",
+			"bootstrap/dist/js/bootstrap.bundle.min.js",
+		],
+		"home" => [
+			"dropzone/dropzone.min.css",
+			"dropzone/dropzone.min.js",
+		],
+	];
+}
