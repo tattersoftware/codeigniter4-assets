@@ -5,7 +5,7 @@ Lightweight asset loader for CodeIgniter 4
 
 1. Run: `> composer require tatter/assets`
 2. Put CSS & JS files in: public/assets
-3. Add in <head></head>: `helper("tatter\assets"); css();`
+3. Add in head tag: `helper("tatter\assets"); css();`
 4. Add to footer: `js();`
 
 ## Features
