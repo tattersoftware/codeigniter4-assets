@@ -18,9 +18,9 @@ if (! function_exists('css'))
 	
 		// intercept requests for a single file
 		if (is_string($file))
-			$assets->displayFile($file);
+			return $assets->displayFile($file);
 		else
-			$assets->display("css");	
+			return $assets->display("css");	
 	}
 }
 
@@ -33,8 +33,8 @@ if (! function_exists('js'))
 	
 		// intercept requests for a single file
 		if (is_string($file))
-			$assets->displayFile($file);
+			return $assets->displayFile($file);
 		else
-			$assets->display("js");	
+			return $assets->display("js");	
 	}
 }

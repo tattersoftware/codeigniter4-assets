@@ -29,28 +29,27 @@ use CodeIgniter\Config\Services;
 /*** CLASS ***/
 class Assets
 {
-
-	private $fsbase;
-	private $webbase;
-	private $routes;
+	protected $fsbase;
+	protected $webbase;
+	protected $routes;
 
 	// initiate library, check for existing session
-	public function __construct()
+	public function __construct($config = null)
 	{
 		// load required helpers
 		helper("filesystem");
 		helper("url");
 		
 		// load optional configuration
-		$config = config('Assets', false);
+		$config = $config ?? config('Assets', false);
 		
-		// set parameters by config override or default
+		// set parameters by config override or use default
 		$this->fsbase = $config->fsbase ?? FCPATH."assets/";
 		$this->webbase = $config->webbase ?? base_url()."assets/";
 		$this->routes = $config->routes ?? [ ];
 	}
 
-	// outputs route-relevant and preconfigured assets of a given extension
+	// returns route-relevant and preconfigured assets of a given extension
 	// accepts 'css' or 'js'
 	public function display(string $extension)
 	{
@@ -58,16 +57,18 @@ class Assets
 			return false;
 		
 		// output all matched files as tags
-		echo "<!-- Local ".strtoupper($extension)." files -->".PHP_EOL;
+		$buffer = "<!-- Local ".strtoupper($extension)." files -->".PHP_EOL;
 		foreach ($this->routed($extension) as $file)
-			echo $this->tag($file).PHP_EOL;
+			$buffer .= $this->tag($file).PHP_EOL;
+		return $buffer;
 	}
 
 	// outputs a formatted tag for a single file
-	public function displayFile(string $file) {
+	public function displayFile(string $file)
+	{
 		if (! file_exists($this->fsbase . $file))
 			return false;
-		echo $this->tag($file).PHP_EOL;		
+		return $this->tag($file).PHP_EOL;		
 	}
 	
 	// given (an existing) file, formats it as a vlid tag
