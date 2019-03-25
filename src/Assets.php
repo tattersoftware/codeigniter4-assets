@@ -150,8 +150,8 @@ class Assets
 			$route = empty($route)? $segment : $route . '/' . $segment; //prevents double slashes
 			
 			// check for custom assets from config first
-			if (! empty($this->routes[$route]) ):
-				foreach ($this->routes[$route] as $item):
+			if (! empty($this->config->routes[$route]) ):
+				foreach ($this->config->routes[$route] as $item):
 					// make sure the extensions match
 					if (is_string($item) && strtolower(pathinfo($item, PATHINFO_EXTENSION))==strtolower($extension)):
 						$files[] = $item;
