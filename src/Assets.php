@@ -1,4 +1,4 @@
-<?php namespace Tatter\Libraries;
+<?php namespace Tatter\Assets;
 
 /***
 * Name: Assets
