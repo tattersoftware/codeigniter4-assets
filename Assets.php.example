@@ -23,11 +23,11 @@ class Assets extends \Tatter\Assets\Config\Assets
 	
 	// additional assets to load per route - no leading/trailing slashes
 	public $routes = [
-		"" => [
+		'' => [
 			"bootstrap/dist/css/bootstrap.min.css",
 			"bootstrap/dist/js/bootstrap.bundle.min.js",
 		],
-		"upload" => [
+		'files/upload' => [
 			"dropzone/dropzone.min.css",
 			"dropzone/dropzone.min.js",
 		],
