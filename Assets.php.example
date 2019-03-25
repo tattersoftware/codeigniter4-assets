@@ -13,13 +13,13 @@
 
 use CodeIgniter\Config\BaseConfig;
 
-class Assets extends \Tatter\Assets\Config
+class Assets extends \Tatter\Assets\Config\Assets
 {
 	// location of asset files in the filesystem
 	public $fileBase  = FCPATH . "assets/";
 	
-	// location of asset files via URL
-	public $webBase =  base_url('assets/');
+	// location of asset files via URL; can be relative or full URL
+	public $webBase =  'https://example.com/assets/';
 	
 	// additional assets to load per route - no leading/trailing slashes
 	public $routes = [

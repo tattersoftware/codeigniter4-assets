@@ -48,6 +48,14 @@ class Assets
 		
 		// save configuration
 		$this->config = $config;
+		
+		// if no webBase is set use website URL
+		if (empty($this->config->webBase))
+			$this->config->webBase = base_url();
+			
+		// if URL is relative expand it with base URL
+		elseif (! filter_var($this->config->webBase, FILTER_VALIDATE_URL))
+			$this->config->webBase = base_url($this->config->webBase);
 	}
 
 	// returns route-relevant and preconfigured assets of a given extension

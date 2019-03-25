@@ -8,7 +8,7 @@ class Assets extends BaseConfig
 	public $fileBase  = FCPATH . "assets/";
 	
 	// location of asset files via URL
-	public $webBase =  base_url('assets/');
+	public $webBase =  'assets/';
 	
 	// additional assets to load per route - no leading/trailing slashes
 	public $routes = [ ];
