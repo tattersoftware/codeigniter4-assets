@@ -11,7 +11,7 @@
 * Requirements:
 * 	>= PHP 7.2
 * 	>= CodeIgniter 4.0
-*	CodeIgniter's Filesystem and URL helpers (loaded automatically)
+*	CodeIgniter's Filesystem, HTML, and URL helpers (loaded automatically)
 *
 * Configuration:
 * 	Use Config/Assets.php for location overrides and custom route assets
@@ -24,29 +24,30 @@
 *
 ***/
 
+use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Config\Services;
+use Tatter\Assets\Exceptions\AssetsException;
 
 /*** CLASS ***/
 class Assets
 {
-	protected $fsbase;
-	protected $webbase;
-	protected $routes;
+	/**
+	 * Our configuration instance.
+	 *
+	 * @var \Tatter\Assets\Config\Assets
+	 */
+	protected $config;
 
 	// initiate library, check for existing session
 	public function __construct($config = null)
 	{
 		// load required helpers
 		helper("filesystem");
+		helper("html");
 		helper("url");
 		
-		// load optional configuration
-		$config = $config ?? config('Assets', false);
-		
-		// set parameters by config override or use default
-		$this->fsbase = $config->fsbase ?? FCPATH."assets/";
-		$this->webbase = $config->webbase ?? base_url()."assets/";
-		$this->routes = $config->routes ?? [ ];
+		// save configuration
+		$this->config = $config;
 	}
 
 	// returns route-relevant and preconfigured assets of a given extension
@@ -56,7 +57,7 @@ class Assets
 		if (! in_array($extension, ['css', 'js']))
 			return false;
 		
-		// output all matched files as tags
+		// buffer all matched files as tags
 		$buffer = "<!-- Local ".strtoupper($extension)." files -->".PHP_EOL;
 		foreach ($this->routed($extension) as $file)
 			$buffer .= $this->tag($file).PHP_EOL;
@@ -66,15 +67,15 @@ class Assets
 	// outputs a formatted tag for a single file
 	public function displayFile(string $file)
 	{
-		if (! file_exists($this->fsbase . $file))
+		if (! file_exists($this->config->fileBase . $file))
 			return false;
 		return $this->tag($file).PHP_EOL;		
 	}
 	
-	// given (an existing) file, formats it as a vlid tag
+	// given (an existing) file, formats it as a valid tag
 	protected function tag(string $file)
 	{
-		$path = $this->fsbase . $file;
+		$path = $this->config->fileBase . $file;
 
 		// get file extension
 		$extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
@@ -82,27 +83,28 @@ class Assets
 		// use last modified time for version control
 		$version = filemtime($path);
 		
+		// build the URL
+		$url = $this->config->webBase . $file . "?v=" . $version;
+		
 		// create extension-specific tag
 		switch ($extension):
 			case "css":
-				$tag = "<link rel='stylesheet' href='{$this->webbase}{$file}?v={$version}' type='text/css' />";
+				return link_tag($url);
 			break;
 			
 			case "js":
-				$tag = "<script type='text/javascript' src='{$this->webbase}{$file}?v={$version}'></script>";
+				return script_tag($url);
 			break;
 			
 			case "img":
 				$alt = ucfirst(pathinfo($path, PATHINFO_FILENAME));
-				$tag = "<img src='{$this->webbase}{$file}?v={$version}' alt='{$alt}' />";
+				return img($url, false, ['alt' => $alt]);
 			break;
 			
 			default:
-				throw new \Exception("Unsupported file extension: {$extension}");
+				throw AssetsException::forUnsupportExtension($extension);
 
 		endswitch;
-		
-		return $tag;
 	}
 	
 	// checks route-relevant folders and pre-configured array for relevant files with given extension
@@ -115,7 +117,7 @@ class Assets
 		
 		// get the controller (controllerName less its namespace)
 		// accounts for default route and subdirectories
-		$controller = str_replace([$routes->getDefaultNamespace(), '\\'], "", $router->controllerName());
+		$controller = str_replace([$routes->getDefaultNamespace(), '\\'], '', $router->controllerName());
 
 		// start the route from the controller
 		$segments = explode(PATH_SEPARATOR, $controller);
@@ -123,25 +125,26 @@ class Assets
 		// add the method
 		$segments[] = $router->methodName();
 
-		// add file-safe versions of parameters
+		// add file-safe versions of any parameters
 		foreach ($router->params() as $param)
 			$segments[] = url_title($param);
 		
 		// always start at base
-		array_unshift($segments, "");
+		array_unshift($segments, '');
 		
 		// lowercase everything
-		$segments = array_map("strtolower", $segments);
+		$segments = array_map('strtolower', $segments);
 
 		// incrementally check each segment for files (matching this extension)
-		$route = "";
+		$route = '';
 		$files = [ ];
 		foreach ($segments as $segment):
-			$route = empty($route)? $segment : $route."/".$segment; //prevents double slashes
+			$route = empty($route)? $segment : $route . '/' . $segment; //prevents double slashes
 			
-			// check for custom assets from config
+			// check for custom assets from config first
 			if (! empty($this->routes[$route]) ):
 				foreach ($this->routes[$route] as $item):
+					// make sure the extensions match
 					if (is_string($item) && strtolower(pathinfo($item, PATHINFO_EXTENSION))==strtolower($extension)):
 						$files[] = $item;
 					endif;
@@ -149,10 +152,11 @@ class Assets
 			endif;
 			
 			// check filesystem for matching assets
-			if ($items = directory_map($this->fsbase . $route, 1)):
+			if ($items = directory_map($this->config->fileBase . $route, 1)):
 				foreach ($items as $item):
+					// make sure the extensions match
 					if (strtolower(pathinfo($item, PATHINFO_EXTENSION))==strtolower($extension)):
-						$files[] = empty($route)? $item : $route."/".$item;
+						$files[] = empty($route)? $item : $route . '/' . $item;
 					endif;
 				endforeach;
 			endif;
@@ -161,5 +165,4 @@ class Assets
 		
 		return array_unique($files);
 	}
-	
 }

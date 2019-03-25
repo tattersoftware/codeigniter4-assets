@@ -13,13 +13,13 @@
 
 use CodeIgniter\Config\BaseConfig;
 
-class Assets extends BaseConfig
+class Assets extends \Tatter\Assets\Config
 {
-	// override location of asset files in the filesystem
-	public $fsbase  = FCPATH."assets/";
+	// location of asset files in the filesystem
+	public $fileBase  = FCPATH . "assets/";
 	
-	// override location of asset files URL
-	public $webbase = "https://example.com/assets/";
+	// location of asset files via URL
+	public $webBase =  base_url('assets/');
 	
 	// additional assets to load per route - no leading/trailing slashes
 	public $routes = [
@@ -27,7 +27,7 @@ class Assets extends BaseConfig
 			"bootstrap/dist/css/bootstrap.min.css",
 			"bootstrap/dist/js/bootstrap.bundle.min.js",
 		],
-		"home" => [
+		"upload" => [
 			"dropzone/dropzone.min.css",
 			"dropzone/dropzone.min.js",
 		],
