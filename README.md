@@ -18,8 +18,8 @@ Install easily via Composer to take advantage of CodeIgniter 4's autoloading cap
 and always be up-to-date:
 * `> composer require tatter/assets`
 
-Or, install manually by downloading the source files and copying them into CodeIgniter 4's
-app/ same subdirectories.
+Or, install manually by downloading the source files and adding the directory to
+`app/Config/Autoload.php`.
 
 ## Configuration (optional)
 

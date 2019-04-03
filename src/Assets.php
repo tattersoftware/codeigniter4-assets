@@ -84,6 +84,8 @@ class Assets
 	protected function tag(string $file)
 	{
 		$path = $this->config->fileBase . $file;
+		if (! is_file($path))
+			return false;
 
 		// get file extension
 		$extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
@@ -125,11 +127,11 @@ class Assets
 		
 		// get the controller (controllerName less its namespace)
 		// accounts for default route and subdirectories
-		$controller = str_replace([$routes->getDefaultNamespace(), '\\'], '', $router->controllerName());
+		$controller = str_replace($routes->getDefaultNamespace(), '', $router->controllerName());
 
 		// start the route from the controller
-		$segments = explode(PATH_SEPARATOR, $controller);
-		
+		$segments = explode('\\', $controller);
+
 		// add the method
 		$segments[] = $router->methodName();
 
