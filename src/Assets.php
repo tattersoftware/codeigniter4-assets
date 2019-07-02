@@ -112,7 +112,7 @@ class Assets
 			break;
 			
 			default:
-				throw AssetsException::forUnsupportExtension($extension);
+				throw AssetsException::forUnsupportedExtension($extension);
 
 		endswitch;
 	}
