@@ -63,7 +63,7 @@ class Assets
 	public function display(string $extension)
 	{
 		if (! in_array($extension, ['css', 'js']))
-			return false;
+			throw AssetsException::forUnsupportedExtension($extension);
 		
 		// buffer all matched files as tags
 		$buffer = "<!-- Local ".strtoupper($extension)." files -->".PHP_EOL;
