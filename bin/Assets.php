@@ -11,8 +11,6 @@
 *
 ***/
 
-use CodeIgniter\Config\BaseConfig;
-
 class Assets extends \Tatter\Assets\Config\Assets
 {
 	// location of asset files in the filesystem

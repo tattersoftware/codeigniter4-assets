@@ -24,7 +24,7 @@ Or, install manually by downloading the source files and adding the directory to
 ## Configuration (optional)
 
 The library's default behavior can be overridden or augment by its config file. Copy
-src/Config/Assets.php.example to app/Config/Assets.php and follow the instructions in the
+**bin/Assets.php** to **app/Config/Assets.php** and follow the instructions in the
 comments. If no config file is found the library will use its defaults.
 
 ## Usage
