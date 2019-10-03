@@ -4,9 +4,10 @@ Lightweight asset loader for CodeIgniter 4
 ## Quick Start
 
 1. Install with Composer: `> composer require tatter/assets`
-2. Put CSS & JS files in: public/assets
-3. Add in head tag: `<?= service('assets')->display('css') ?>`
-4. Add to footer: `<?= service('assets')->display('js') ?>`
+2. Put CSS & JS files in: **public/assets**
+3. Add additional assets to config: **app/Config/Assets.php**
+3. Add in head tag: `<?= service('assets')->css() ?>`
+4. Add to footer: `<?= service('assets')->js() ?>`
 
 ## Features
 
@@ -30,29 +31,37 @@ comments. If no config file is found the library will use its defaults.
 ## Usage
 
 If installed correctly CodeIgniter 4 will detect and autoload the library, service, and
-config. Use the service `display()` method to retrieve the appropriate assets:
-`<?= service('assets')->display('css') ?>`
+config. Use the library methods `css()` and `js()` to display tags for the route-specific assets:
+`<?= service('assets')->css() ?>`
 
 ## Structure
 
-The library searches the assets directory (default: public/assets) for files matching the
-current route, loading them in a cascading fashion for each route segment.
+The library searches the assets directory (default: **public/assets**) for files matching
+the current route, loading them in a cascading fashion for each route segment.
 
 **Example:** https://example.com/users/view/12
 
-The library will first load any root assets (public/assets/*.css *.js), then assets in
-the 'users' subfolder (public/assets/users/), then 'view' subfolder, then '12' subfolder. Any
-missing or invalid folders are ignored.
+The library will first load any root assets (`public/assets/*.css *.js`), then assets in
+the "users" subfolder (`public/assets/users/`), then "view" subfolder, then "12" subfolder.
+Any missing or invalid folders are ignored.
 
-Additional assets may be loaded from the config variable $routes - this is particularly
-helpful for including pre-bundled libraries.
+Additional assets may be specified from the config variable `$routes` - this is particularly
+helpful for including pre-bundled libraries. `$routes` maps each route to an asset file or
+a directory of assets to load for that route.
 
 **Example:**
 ```
 public $routes = [
-	'' => ["bootstrap/dist/css/bootstrap.min.css", "bootstrap/dist/js/bootstrap.bundle.min.js"]
+	'' => [
+		'bootstrap/dist/css/bootstrap.min.css',
+		'bootstrap/dist/js/bootstrap.bundle.min.js'
+	],
+	'files/upload' => [
+		'vendor/dropzone'
+	]
 ];
 ```
 
-This tells the library to load Bootstrap for every route ('') without having to move it
-from its pre-bundled subdirectory.
+This tells the library to load the Bootstrap assets for every route (`''`) without having
+to move it from its pre-bundled subdirectory. It also will load any assets in the `dropzone`
+directory for the specified route.
