@@ -1,0 +1,3 @@
+function formValidate() {
+	return true;
+}

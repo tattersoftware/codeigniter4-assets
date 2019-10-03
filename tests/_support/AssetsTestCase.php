@@ -1,38 +1,26 @@
 <?php namespace ModuleTests\Support;
 
-use CodeIgniter\Config\Services;
-use CodeIgniter\Router\RouteCollection;
-use CodeIgniter\Router\Router;
-
 class AssetsTestCase extends \CodeIgniter\Test\CIUnitTestCase
-{	
+{
 	/**
-	 * @var \CodeIgniter\Router\RouteCollection $collection
+	 * @var \Tatter\Assets\Libraries\Assets
 	 */
-	protected $collection;
+	protected $assets;
 	
 	/**
-	 * @var \CodeIgniter\Router\Router
+	 * @var \Tatter\Assets\Config\Assets
 	 */
-	protected $router;
+	protected $config;
 	
     public function setUp(): void
     {
         parent::setUp();
-
-		$this->collection = Services::routes();
-		$routes = [
-			'factories'            => 'Factories::index',
-			'factories/update'     => 'Factories::update',
-			'factories/(:segment)' => 'Factories::show/$1',
-			'widgets'              => '\Module\Controllers\WidgetController::index',
-			'widgets/(:segment)'   => '\Module\Controllers\WidgetController::details/$1',
-		];
-		$this->collection->map($routes);
-
-		$request = Services::request();
-		$request->setMethod('get');
 		
-		$this->router = new Router($this->collection, $request);
+		$this->config           = new \Tatter\Assets\Config\Assets;
+		$this->config->silent   = false;
+		$this->config->fileBase = SUPPORTPATH . 'assets/';
+		
+		// Create the service
+		$this->assets = new \Tatter\Assets\Libraries\Assets($this->config);
 	}
 }
