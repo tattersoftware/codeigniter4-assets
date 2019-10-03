@@ -9,4 +9,9 @@ class AssetsException extends FrameworkException implements ExceptionInterface
 	{
 		return new static(lang('Assets.unsupportedExtension', [$extension]));
 	}
+	
+	public static function forInvalidConfigItem(string $route)
+	{
+		return new static(lang('Assets.invalidConfigItem', [$route]));
+	}
 }

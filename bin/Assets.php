@@ -13,21 +13,27 @@
 
 class Assets extends \Tatter\Assets\Config\Assets
 {
-	// location of asset files in the filesystem
-	public $fileBase  = FCPATH . "assets/";
+	// Whether to continue instead of throwing exceptions
+	public $silent = true;
 	
-	// location of asset files via URL; can be relative or full URL
+	// Extensions to use when auto-detecting assets
+	public $extensions = ['css', 'js'];
+	
+	// Location of asset files in the filesystem
+	public $fileBase  = FCPATH . 'assets/';
+	
+	// Location of asset URLs
 	public $webBase =  'https://example.com/assets/';
 	
-	// additional assets to load per route - no leading/trailing slashes
+	// Additional paths to load per route
+	// Relative to fileBase, no leading/trailing slashes
 	public $routes = [
 		'' => [
-			"bootstrap/dist/css/bootstrap.min.css",
-			"bootstrap/dist/js/bootstrap.bundle.min.js",
+			'bootstrap/dist/css/bootstrap.min.css',
+			'bootstrap/dist/js/bootstrap.bundle.min.js',
 		],
 		'files/upload' => [
-			"dropzone/dropzone.min.css",
-			"dropzone/dropzone.min.js",
+			'dropzone/',
 		],
 	];
 }

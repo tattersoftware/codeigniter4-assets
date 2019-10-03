@@ -4,12 +4,19 @@ use CodeIgniter\Config\BaseConfig;
 
 class Assets extends BaseConfig
 {
-	// location of asset files in the filesystem
-	public $fileBase  = FCPATH . "assets/";
+	// Whether to continue instead of throwing exceptions
+	public $silent = true;
 	
-	// location of asset files via URL
+	// Extensions to use when auto-detecting assets
+	public $extensions = ['css', 'js'];
+	
+	// Location of asset files in the filesystem
+	public $fileBase  = FCPATH . 'assets/';
+	
+	// Location of asset URLs
 	public $webBase =  'assets/';
 	
-	// additional assets to load per route - no leading/trailing slashes
-	public $routes = [ ];
+	// Additional paths to load per route
+	// Relative to fileBase, no leading/trailing slashes
+	public $routes = [];
 }
