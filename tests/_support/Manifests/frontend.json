@@ -1,7 +1,7 @@
 {
 	"source": "FrontendModule",
     "destination": "vendor/frontend",
-    "paths": [
+    "resources": [
         {
             "source": "/",
         	"recursive": true,

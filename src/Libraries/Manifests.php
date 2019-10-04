@@ -60,6 +60,15 @@ class Manifests
 		{
 			return false;
 		}
+		
+		// Proceed resource by resource
+		$result = true;
+		foreach ($manifest->resources as $resource)
+		{
+			$result = $result && $this->publishResource($resource);
+		}
+		
+		return $result;
 	}
 
 	// Read in and verify a manifest from a file path
@@ -118,7 +127,7 @@ class Manifests
 	}
 	
 	// Verify or create a destination folder and all folders up to it
-	protected function secureDestination($path): ?object
+	protected function secureDestination($path): bool
 	{
 		$directory = rtrim($this->config->fileBase, '/');
 		
@@ -133,15 +142,18 @@ class Manifests
 		{
 			$directory .= $segment . '/';
 			
-			if ($this->ensureDirectory($directory))
+			if (! $this->ensureDirectory($directory))
 			{
-				$this->addIndexToDirectory($directory);
+				return false;
 			}
-			else
+			
+			if (! $this->addIndexToDirectory($directory))
 			{
-				return;
+				return false;
 			}
 		}
+		
+		return true;
 	}
 	
 	// Make sure a directory exists and is writable
@@ -222,4 +234,20 @@ class Manifests
 </body>
 </html>
 ';
+	}
+
+	// Parse a resource and copy it to the determined destination
+	protected function publishResource($resource): ?object
+	{
+		// Validate the source
+		if (! isset($resource->source))
+		{
+			return false;
+		}
+		
+		// Make sure the source exists
+		$file = new File($resource->source);
+		//WIP
+
+	}
 }

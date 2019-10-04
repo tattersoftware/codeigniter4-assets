@@ -1,7 +1,7 @@
 {
 	"source": "WidgetModule/dist",
     "destination": "vendor/widgets",
-    "paths": [
+    "resources": [
         {
             "source": "/",
             "filter": [
