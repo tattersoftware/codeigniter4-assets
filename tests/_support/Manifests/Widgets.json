@@ -1,0 +1,13 @@
+{
+	"source": "WidgetModule/dist",
+    "destination": "vendor/widgets",
+    "paths": [
+        {
+            "source": "widget_style.css",
+        	"destination": "vendor/widgets/css"
+        },
+        {
+            "source": "notAsset.json"
+        }
+    ]
+}

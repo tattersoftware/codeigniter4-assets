@@ -1,0 +1,13 @@
+{
+	"source": "WidgetModule/dist",
+    "destination": "vendor/widgets",
+    "paths": [
+        {
+            "source": "/",
+            "filter": [
+            	"/\.css$/i",
+            	"/\.png$/i",
+            ]
+        }
+    ]
+}

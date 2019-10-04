@@ -1,0 +1,11 @@
+{
+	"source": "FrontendModule",
+    "destination": "vendor/frontend",
+    "paths": [
+        {
+            "source": "/",
+        	"recursive": true,
+        	"flatten": true
+        },
+    ]
+}
