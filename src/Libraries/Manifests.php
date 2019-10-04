@@ -14,11 +14,24 @@ class Manifests
 	 * @var \Tatter\Assets\Config\Assets
 	 */
 	protected $config;
+
+	/**
+	 * Messages for CLI.
+	 *
+	 * @var array [text, color]
+	 */
+	protected $messages = [];
 	
 	public function __construct($config = null)
 	{
 		// Save the configuration
 		$this->config = $config;
+	}
+
+	// Scan all namespaces for manifest files
+	public function getMessages(): array
+	{
+		return $this->messages;
 	}
 
 	// Scan all namespaces for manifest files
@@ -29,11 +42,28 @@ class Manifests
 		$files = $locator->listFiles('Manifests');
 		
 		// Filter by .json extension
-		return preg_grep("/.+\.json$/i", $files);
+		return array_unique(preg_grep("/.+\.json$/i", $files));
 	}
 
 	// Publish assets from a single manifest
 	public function publish($path): bool
+	{
+		// Verify the manifest
+		$manifest = $this->manifestFromFile($path);
+		if ($manifest === null)
+		{
+			return false;
+		}
+		
+		// Verify the destination
+		if (! $this->secureDestination($manifest->destination))
+		{
+			return false;
+		}
+	}
+
+	// Read in and verify a manifest from a file path
+	protected function manifestFromFile($path): ?object
 	{
 		// Make sure the file is valid and accessible
 		$file = new File($path);
@@ -43,7 +73,7 @@ class Manifests
 			if ($this->config->silent)
 			{
 				log_message('warning', lang('Files.fileNotFound', [$path]));
-				return false;
+				return;
 			}
 			
 			throw FileNotFoundException::forFileNotFound($path);
@@ -52,21 +82,144 @@ class Manifests
 		// Make sure the file is JSON
 		$manifest = file_get_contents($file->getRealPath());
 		$manifest = json_decode($manifest);
-
 		if ($manifest === NULL)
 		{
 			$errornum = json_last_error();
 			
 			if ($this->config->silent)
 			{
-				log_message('warning', 'JSON Error #' . $errornum);
-				log_message('warning', lang('Manifests.invalidFileFormat', [$path]));
-				return false;
+				$error = 'JSON Error #' . $errornum . '. ' . lang('Manifests.invalidFileFormat', [$path]);
+				log_message('warning', $error));
+				$this->messages[] = [$error, 'red'];
+				return;
 			}
 			
 			throw ManifestsException::forInvalidFileFormat($path);
 		}
 		
-		//WIP
+		// Verify necessary fields
+		foreach (['source', 'destination', 'paths'] as $field)
+		{
+			if (empty($manifest->{$field}))
+			{
+				if ($this->config->silent)
+				{
+					$error = lang('Manifests.fieldMissingFromFile', [$field, $path]);
+					log_message('warning', $error));
+					$this->messages[] = [$error, 'red'];
+					return;
+				}
+			
+				throw ManifestsException::forFieldMissingFromFile($field, $path);
+			}
+		}
+		
+		return $manifest;
 	}
+	
+	// Verify or create a destination folder and all folders up to it
+	protected function secureDestination($path): ?object
+	{
+		$directory = rtrim($this->config->fileBase, '/');
+		
+		$segments = explode('/', $path);
+		if ($segments[0] != '')
+		{
+			$segments = array_unshift($segments, '');			
+		}
+
+		// Secure each directory up to the destination
+		foreach ($segments as $segment)
+		{
+			$directory .= $segment . '/';
+			
+			if ($this->ensureDirectory($directory))
+			{
+				$this->addIndexToDirectory($directory);
+			}
+			else
+			{
+				return;
+			}
+		}
+	}
+	
+	// Make sure a directory exists and is writable
+	protected function ensureDirectory($directory): bool
+		// Check for existence
+		if (! file_exists($directory))
+		{
+			mkdir($directory, 0644, true);
+		}
+		
+		// Make sure its a directory
+		if (! is_dir($directory))
+		{
+			$error = lang('Manifests.cannotCreateDirectory', [$directory]);
+			log_message('warning', $error));
+			$this->messages[] = [$error, 'red'];
+			return false;
+		}
+		
+		// Make sure it is writable
+		if (! is_writable($directory))
+		{
+			$error = lang('Manifests.directoryNotWritable', [$directory]);
+			log_message('warning', $error));
+			$this->messages[] = [$error, 'red'];
+			return false;
+		}
+		
+		return true;
+	}
+	
+	// Create index.html in the destination to prevent list access
+	protected function addIndexToDirectory($directory): bool
+	{
+		$path = $directory . 'index.html';
+		$file = new File($path);
+		
+		// Check for existing file
+		if ($file->isFile())
+		{
+			return true;
+		}
+		
+		// Directory should be writable but jsut in case...
+		if (! $file->isWritable)
+		{
+			$error = lang('Manifests.directoryNotWritable', [$directory]);
+			log_message('warning', $error));
+			$this->messages[] = [$error, 'red'];
+			return false;
+		}
+		
+		// Do it
+		$file = $file->openFile('w');
+		if (! $file->fwrite($this->getIndexHtml))
+		{
+			$error = lang('Manifests.cannotCreateIndexFile', [$path]);
+			log_message('warning', $error));
+			$this->messages[] = [$error, 'red'];
+			return false;
+		}
+		
+		return true;
+	}
+	
+	// Generate content for index.html
+	protected function getIndexHtml(): string
+	{
+		return '<!DOCTYPE html>
+<html>
+<head>
+	<title>403 Forbidden</title>
+</head>
+<body>
+
+<p>Directory access is forbidden.</p>
+
+</body>
+</html>
+';
 }

@@ -9,4 +9,9 @@ class ManifestsException extends FrameworkException implements ExceptionInterfac
 	{
 		return new static(lang('Manifests.invalidFileFormat', [$path]));
 	}
+	
+	public static function forFieldMissingFromFile(string $field, string $path)
+	{
+		return new static(lang('Manifests.fieldMissingFromFile', [$field, $path]));
+	}
 }
