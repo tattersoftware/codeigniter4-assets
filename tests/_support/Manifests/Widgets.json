@@ -1,5 +1,5 @@
 {
-	"source": "WidgetModule/dist",
+	"source": "vendor/WidgetModule/dist",
     "destination": "vendor/widgets",
     "resources": [
         {

@@ -1,5 +1,5 @@
 {
-	"source": "WidgetModule/dist",
+	"source": "vendor/lawyerpack/dist",
     "destination": "vendor/widgets",
     "resources": [
         {

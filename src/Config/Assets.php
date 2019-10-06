@@ -16,6 +16,9 @@ class Assets extends BaseConfig
 	// Location of asset URLs
 	public $webBase =  'assets/';
 	
+	// Starting directory for manifest publication
+	public $publishRoot =  ROOTPATH;
+	
 	// Additional paths to load per route
 	// Relative to fileBase, no leading/trailing slashes
 	public $routes = [];

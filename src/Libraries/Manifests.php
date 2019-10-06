@@ -65,6 +65,7 @@ class Manifests
 		$result = true;
 		foreach ($manifest->resources as $resource)
 		{
+			$this->expandPaths($resource, $manifest);
 			$result = $result && $this->publishResource($resource);
 		}
 		
@@ -81,8 +82,11 @@ class Manifests
 		{
 			if ($this->config->silent)
 			{
-				log_message('warning', lang('Files.fileNotFound', [$path]));
-				return;
+				$error = lang('Files.fileNotFound', [$path]);
+				log_message('warning', $error);
+				$this->messages[] = [$error, 'red'];
+
+				return null;
 			}
 			
 			throw FileNotFoundException::forFileNotFound($path);
@@ -98,9 +102,9 @@ class Manifests
 			if ($this->config->silent)
 			{
 				$error = 'JSON Error #' . $errornum . '. ' . lang('Manifests.invalidFileFormat', [$path]);
-				log_message('warning', $error));
+				log_message('warning', $error);
 				$this->messages[] = [$error, 'red'];
-				return;
+				return null;
 			}
 			
 			throw ManifestsException::forInvalidFileFormat($path);
@@ -114,9 +118,9 @@ class Manifests
 				if ($this->config->silent)
 				{
 					$error = lang('Manifests.fieldMissingFromFile', [$field, $path]);
-					log_message('warning', $error));
+					log_message('warning', $error);
 					$this->messages[] = [$error, 'red'];
-					return;
+					return null;
 				}
 			
 				throw ManifestsException::forFieldMissingFromFile($field, $path);
@@ -158,6 +162,7 @@ class Manifests
 	
 	// Make sure a directory exists and is writable
 	protected function ensureDirectory($directory): bool
+	{
 		// Check for existence
 		if (! file_exists($directory))
 		{
@@ -168,7 +173,7 @@ class Manifests
 		if (! is_dir($directory))
 		{
 			$error = lang('Manifests.cannotCreateDirectory', [$directory]);
-			log_message('warning', $error));
+			log_message('warning', $error);
 			$this->messages[] = [$error, 'red'];
 			return false;
 		}
@@ -177,7 +182,7 @@ class Manifests
 		if (! is_writable($directory))
 		{
 			$error = lang('Manifests.directoryNotWritable', [$directory]);
-			log_message('warning', $error));
+			log_message('warning', $error);
 			$this->messages[] = [$error, 'red'];
 			return false;
 		}
@@ -197,11 +202,11 @@ class Manifests
 			return true;
 		}
 		
-		// Directory should be writable but jsut in case...
+		// Directory should be writable but just in case...
 		if (! $file->isWritable)
 		{
 			$error = lang('Manifests.directoryNotWritable', [$directory]);
-			log_message('warning', $error));
+			log_message('warning', $error);
 			$this->messages[] = [$error, 'red'];
 			return false;
 		}
@@ -211,7 +216,7 @@ class Manifests
 		if (! $file->fwrite($this->getIndexHtml))
 		{
 			$error = lang('Manifests.cannotCreateIndexFile', [$path]);
-			log_message('warning', $error));
+			log_message('warning', $error);
 			$this->messages[] = [$error, 'red'];
 			return false;
 		}
@@ -235,9 +240,23 @@ class Manifests
 </html>
 ';
 	}
+	
+	// Expand resource paths relative to the configured publish root and the manifest property
+	protected function expandPaths(&$resource, &$manifest)
+	{
+		$resource->source = 
+			rtrim($this->config->publishRoot, '/') . '/' .
+			trim($manifest->source, '/') . '/' .
+			ltrim($resource->source, '/');
+
+		$resource->destination =
+			rtrim($this->config->publishRoot, '/') . '/' .
+			trim($manifest->destination, '/') . '/' .
+			ltrim($resource->destination ?? '', '/');
+	}
 
 	// Parse a resource and copy it to the determined destination
-	protected function publishResource($resource): ?object
+	protected function publishResource($resource): bool
 	{
 		// Validate the source
 		if (! isset($resource->source))
@@ -247,7 +266,108 @@ class Manifests
 		
 		// Make sure the source exists
 		$file = new File($resource->source);
-		//WIP
+		if (! $file->getRealPath())
+		{
+			if ($this->config->silent)
+			{
+				$error = lang('Files.fileNotFound', [$path]);
+				log_message('warning', $error);
+				$this->messages[] = [$error, 'red'];
 
+				return false;
+			}
+			
+			throw FileNotFoundException::forFileNotFound($path);
+		}
+		
+		return $file->isDir() ?
+			$this->publishResourceDirectory($resource) :
+			$this->publishFile($resource->source, $resource->destination);
+	}
+
+	// Scan a directory and apply filters, publishing each file
+	protected function publishResourceDirectory($resource): bool
+	{
+		$result = true;
+		
+		// Recursive, flatten
+		if (! empty($resource->recursive) && ! empty($resource->flatten))
+		{
+			$files = get_filenames($resource->source, true);
+			if (! empty($resource->filter))
+			{
+				$files = preg_grep($resource->filter, $files);
+			}
+			
+			// Publish every file back to the destination
+			foreach ($files as $file)
+			{
+				$result = $this->publishFile($file, $resource->destination);
+			}
+
+			return $result;
+		}
+		
+		// Recursive, not flatten
+		elseif (! empty($resource->recursive))
+		{
+			$items = directory_map($resource->source);
+			return $this->publishDirectoryRecursive($items, $resource->source, $resource->destination);
+		}
+		
+		// Publish every file back to the destination
+		foreach ($files as $source => $destination)
+		{
+			$result = $this->publishFile($source, $destination);
+		}
+		
+		return $result;
+	}
+
+	// Recursive-safe directory publish
+	protected function publishDirectoryRecursive(array $items, string $source, string $destination): bool
+	{
+		$result = true;
+		
+		foreach ($items as $dir => $item)
+		{
+			// Directory
+			if (is_array($item))
+			{
+				$result = $result && $this->publishDirectoryRecursive($item, $source . $dir, $destination . $dir);
+			}
+			// File
+			else
+			{
+				$result = $result && $this->publishFile($source . $item, $destination);
+			}
+		}
+		
+		return $result;
+	}
+
+	// Copy a file into place, creating and securing missing directories
+	protected function publishFile(string $source, string $destination): bool
+	{
+		if (! $this->secureDestination($destination))
+		{
+			return false;
+		}
+		
+		if (copy($source, $destination))
+		{
+			return true;
+		}
+
+		if ($this->config->silent)
+		{
+			$error = lang('Files.cannotMove', [$source, $destination, -1]);
+			log_message('warning', $error);
+			$this->messages[] = [$error, 'red'];
+
+			return false;
+		}
+	
+		throw FileException::forUnableToMove($source, $destination, -1);
 	}
 }
