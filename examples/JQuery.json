@@ -1,10 +1,10 @@
 {
 	"source": "components/jquery",
-    "destination": "vendor/jquery",
-    "resources": [
-        {
-            "source": ".",
-            "filter": "#^jquery.+#"
-        }
-    ]
+	"destination": "vendor/jquery",
+	"resources": [
+		{
+			"source": ".",
+			"filter": "#^jquery.+#"
+		}
+	]
 }
