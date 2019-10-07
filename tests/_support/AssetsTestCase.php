@@ -18,7 +18,7 @@ class AssetsTestCase extends \CodeIgniter\Test\CIUnitTestCase
 		
 		$this->config           = new \Tatter\Assets\Config\Assets;
 		$this->config->silent   = false;
-		$this->config->fileBase = SUPPORTPATH . 'assets/';
+		$this->config->fileBase = MODULESUPPORTPATH . 'assets/';
 		
 		// Create the service
 		$this->assets = new \Tatter\Assets\Libraries\Assets($this->config);

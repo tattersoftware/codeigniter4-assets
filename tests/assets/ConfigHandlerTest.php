@@ -18,7 +18,7 @@ class ConfigHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
 		
 		$this->config           = new \Tatter\Assets\Config\Assets;
 		$this->config->silent   = false;
-		$this->config->fileBase = SUPPORTPATH . 'assets/';
+		$this->config->fileBase = MODULESUPPORTPATH . 'assets/';
 		
 		// Add mock route paths
 		$this->config->routes = [

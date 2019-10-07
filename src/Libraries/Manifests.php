@@ -111,7 +111,7 @@ class Manifests
 		}
 		
 		// Verify necessary fields
-		foreach (['source', 'destination', 'paths'] as $field)
+		foreach (['source', 'destination', 'resources'] as $field)
 		{
 			if (empty($manifest->{$field}))
 			{
@@ -195,7 +195,7 @@ class Manifests
 	{
 		$path = $directory . 'index.html';
 		$file = new File($path);
-		
+
 		// Check for existing file
 		if ($file->isFile())
 		{
@@ -203,7 +203,7 @@ class Manifests
 		}
 		
 		// Directory should be writable but just in case...
-		if (! $file->isWritable)
+		if (! $file->isWritable())
 		{
 			$error = lang('Manifests.directoryNotWritable', [$directory]);
 			log_message('warning', $error);
