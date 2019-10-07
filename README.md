@@ -65,3 +65,30 @@ public $routes = [
 This tells the library to load the Bootstrap assets for every route (`''`) without having
 to move it from its pre-bundled subdirectory. It also will load any assets in the `dropzone`
 directory for the specified route.
+
+## Publishing
+
+**Assets** can publish resources for you. This is particularly helpful if you need files
+from a vendor package but don't want to host the package in your **public/** folder.
+The **Manifests** library uses manifest files to locate and copy matching assets into your
+assets folder (defined by `$config->fileBase`). This library includes a convenience command
+to assist with asset publication:
+
+	php spark assets:publish
+
+By default `assets:publish` will scan all namespaces for JSON files in **{namespaceRoot}/Manifests**
+and (assuming they are valid) will publish the assets defined there. Behavior is
+customizable using **Config/Assets.php** but the default is to copy assets into
+**public/assets/vendor/** into the subdirectory defined in the manifest.
+
+If you are using version control it is recommended to exclude your asset publish directory,
+for example by adding **public/assets/vendor/** to your **.gitignore** file.
+
+### Manifests
+
+Manifests are JSON files with at least the following three properties:
+* `source` - The directory (relative to `$config->publishBase`) of the assets
+* `destination` - The directory (relative to `$config->fileBase`) for the assets
+* `resources` - The list of resources to publish, each with at least its own `source`.
+
+See [examples/](examples/) for some example manifest files.

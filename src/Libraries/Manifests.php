@@ -30,10 +30,12 @@ class Manifests
 		helper('filesystem');
 	}
 
-	// Scan all namespaces for manifest files
+	// Clear and return status messages
 	public function getMessages(): array
 	{
-		return $this->messages;
+		$messages = $this->messages;
+		$this->messages = [];
+		return $messages;
 	}
 
 	// Scan all namespaces for manifest files
@@ -195,7 +197,7 @@ class Manifests
 		// Check for existence
 		if (! file_exists($directory))
 		{
-			mkdir($directory, 0644, true);
+			mkdir($directory, 0755, true);
 		}
 		
 		// Make sure there's a directory there now

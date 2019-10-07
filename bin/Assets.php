@@ -26,7 +26,7 @@ class Assets extends \Tatter\Assets\Config\Assets
 	public $webBase = 'https://example.com/assets/';
 	
 	// Starting directory for manifest publication
-	public $publishBase = ROOTPATH;
+	public $publishBase = ROOTPATH . 'vendor/';
 	
 	// Additional paths to load per route
 	// Relative to fileBase, no leading/trailing slashes
