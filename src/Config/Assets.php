@@ -11,13 +11,13 @@ class Assets extends BaseConfig
 	public $extensions = ['css', 'js'];
 	
 	// Location of asset files in the filesystem
-	public $fileBase  = FCPATH . 'assets/';
+	public $fileBase = FCPATH . 'assets/';
 	
 	// Location of asset URLs
-	public $webBase =  'assets/';
+	public $webBase = 'assets/';
 	
 	// Starting directory for manifest publication
-	public $publishRoot =  ROOTPATH;
+	public $publishBase = ROOTPATH;
 	
 	// Additional paths to load per route
 	// Relative to fileBase, no leading/trailing slashes

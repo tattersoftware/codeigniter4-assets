@@ -1,9 +1,9 @@
 <?php
 
 return [
-	'invalidFileFormat'     => 'Unsupported file format: "{0}"',
-	'fieldMissingFromFile'  => 'Invalid manfiest, the {0} field is missing: {1}',
+	'invalidFileFormat'     => '{0} is not a supported file format: {1}',
+	'missingField'          => 'Invalid manifest, the {0} field is required',
 	'cannotCreateIndexFile' => 'Unable to create the index file: {0}',
-	'cannotCreateDirectory' => 'Unable to create the directroy: {0}',
+	'cannotCreateDirectory' => 'Unable to create the directory: {0}',
 	'directoryNotWritable'  => 'The destination is not writable: {0}',
 ];

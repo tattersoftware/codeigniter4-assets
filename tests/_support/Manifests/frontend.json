@@ -3,9 +3,9 @@
     "destination": "vendor/frontend",
     "resources": [
         {
-            "source": "/",
+            "source": ".",
         	"recursive": true,
         	"flatten": true
-        },
+        }
     ]
 }

@@ -20,13 +20,13 @@ class Assets extends \Tatter\Assets\Config\Assets
 	public $extensions = ['css', 'js'];
 	
 	// Location of asset files in the filesystem
-	public $fileBase  = FCPATH . 'assets/';
+	public $fileBase = FCPATH . 'assets/';
 	
 	// Location of asset URLs
-	public $webBase =  'https://example.com/assets/';
+	public $webBase = 'https://example.com/assets/';
 	
 	// Starting directory for manifest publication
-	public $publishRoot =  ROOTPATH;
+	public $publishBase = ROOTPATH;
 	
 	// Additional paths to load per route
 	// Relative to fileBase, no leading/trailing slashes

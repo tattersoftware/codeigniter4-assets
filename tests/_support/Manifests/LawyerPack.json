@@ -1,13 +1,14 @@
 {
 	"source": "vendor/lawyerpack/dist",
-    "destination": "vendor/widgets",
+    "destination": "vendor/lawyers",
     "resources": [
         {
-            "source": "/",
-            "filter": [
-            	"/\.css$/i",
-            	"/\.png$/i",
-            ]
+            "source": ".",
+            "filter": "#\\.css$#i"
+        },
+        {
+            "source": ".",
+            "filter": "#\\.png$#i"
         }
     ]
 }

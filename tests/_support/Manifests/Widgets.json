@@ -4,7 +4,7 @@
     "resources": [
         {
             "source": "widget_style.css",
-        	"destination": "vendor/widgets/css"
+        	"destination": "css"
         },
         {
             "source": "notAsset.json"

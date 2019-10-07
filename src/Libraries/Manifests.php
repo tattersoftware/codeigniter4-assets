@@ -1,6 +1,5 @@
 <?php namespace Tatter\Assets\Libraries;
 
-use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Files\File;
 use CodeIgniter\Files\Exceptions\FileException;
 use CodeIgniter\Files\Exceptions\FileNotFoundException;
@@ -26,6 +25,9 @@ class Manifests
 	{
 		// Save the configuration
 		$this->config = $config;
+		
+		// Load the helper
+		helper('filesystem');
 	}
 
 	// Scan all namespaces for manifest files
@@ -42,15 +44,14 @@ class Manifests
 		$files = $locator->listFiles('Manifests');
 		
 		// Filter by .json extension
-		return array_unique(preg_grep("/.+\.json$/i", $files));
+		return array_unique(preg_grep("#.+\.json$#i", $files));
 	}
 
 	// Publish assets from a single manifest
-	public function publish($path): bool
+	public function publish(object $manifest): bool
 	{
-		// Verify the manifest
-		$manifest = $this->manifestFromFile($path);
-		if ($manifest === null)
+		// Validate the manifest
+		if (! $this->validate($manifest))
 		{
 			return false;
 		}
@@ -73,7 +74,7 @@ class Manifests
 	}
 
 	// Read in and verify a manifest from a file
-	protected function manifestFromFile($file): ?object
+	public function parse(string $file): ?object
 	{
 		// Make sure the file is valid and accessible
 		if (! is_file($file))
@@ -95,48 +96,78 @@ class Manifests
 		$manifest = json_decode($manifest);
 		if ($manifest === NULL)
 		{
-			$errornum = json_last_error();
-			
 			if ($this->config->silent)
 			{
-				$error = 'JSON Error #' . $errornum . '. ' . lang('Manifests.invalidFileFormat', [$file]);
+				$error = lang('Manifests.invalidFileFormat', [$file, json_last_error_msg()]);
 				log_message('warning', $error);
 				$this->messages[] = [$error, 'red'];
 				return null;
 			}
 			
-			throw ManifestsException::forInvalidFileFormat($file);
+			throw ManifestsException::forInvalidFileFormat($file, json_last_error_msg());
+		}
+
+		// Validate the manifest
+		if (! $this->validate($manifest))
+		{
+			return null;
 		}
 		
-		// Verify necessary fields
+		return $manifest;
+	}
+
+	// Validate the required fields
+	public function validate(object $manifest): bool
+	{
+		// Check for the necessary fields
 		foreach (['source', 'destination', 'resources'] as $field)
 		{
 			if (empty($manifest->{$field}))
 			{
 				if ($this->config->silent)
 				{
-					$error = lang('Manifests.fieldMissingFromFile', [$field, $file]);
+					$error = lang('Manifests.missingField', [$field]);
 					log_message('warning', $error);
 					$this->messages[] = [$error, 'red'];
-					return null;
+					return false;
 				}
-			
-				throw ManifestsException::forFieldMissingFromFile($field, $file);
+		
+				throw ManifestsException::forMissingField($field);
 			}
 		}
 		
-		return $manifest;
+		// Check each resource for a source
+		foreach ($manifest->resources as $resource)
+		{
+			if (empty($resource->source))
+			{
+				if ($this->config->silent)
+				{
+					$error = lang('Manifests.missingField', ['resource->source']);
+					log_message('warning', $error);
+					$this->messages[] = [$error, 'red'];
+					return false;
+				}
+		
+				throw ManifestsException::forMissingField('resource->source');
+			}
+		}
+		
+		return true;
 	}
 	
-	// Verify or create a destination folder and all folders up to it
+	// Verify or create a destination folder within fileBase (and all folders up to it)
 	protected function secureDestination($path): bool
 	{
 		$directory = rtrim($this->config->fileBase, '/');
-		
+
+		// Make sure $path is relative and has no trailing slash
+		$path = trim(str_replace($directory, '', $path), '/');
+
 		$segments = explode('/', $path);
 		if ($segments[0] != '')
 		{
-			$segments = array_unshift($segments, '');			
+			array_unshift($segments, '');			
 		}
 
 		// Secure each directory up to the destination
@@ -167,22 +198,32 @@ class Manifests
 			mkdir($directory, 0644, true);
 		}
 		
-		// Make sure its a directory
+		// Make sure there's a directory there now
 		if (! is_dir($directory))
 		{
-			$error = lang('Manifests.cannotCreateDirectory', [$directory]);
-			log_message('warning', $error);
-			$this->messages[] = [$error, 'red'];
-			return false;
+			if ($this->config->silent)
+			{
+				$error = lang('Manifests.cannotCreateDirectory', [$directory]);
+				log_message('warning', $error);
+				$this->messages[] = [$error, 'red'];
+				return false;
+			}
+
+			throw ManifestsException::forCannotCreateDirectory($directory);
 		}
 		
 		// Make sure it is writable
 		if (! is_writable($directory))
 		{
-			$error = lang('Manifests.directoryNotWritable', [$directory]);
-			log_message('warning', $error);
-			$this->messages[] = [$error, 'red'];
-			return false;
+			if ($this->config->silent)
+			{
+				$error = lang('Manifests.directoryNotWritable', [$directory]);
+				log_message('warning', $error);
+				$this->messages[] = [$error, 'red'];
+				return false;
+			}
+
+			throw ManifestsException::forDirectoryNotWritable($directory);
 		}
 		
 		return true;
@@ -200,7 +241,7 @@ class Manifests
 		}
 		
 		// Directory should be writable but just in case...
-		if (! is_writable($file))
+		if (! is_writable(dirname($file)))
 		{
 			$error = lang('Manifests.directoryNotWritable', [$directory]);
 			log_message('warning', $error);
@@ -209,7 +250,7 @@ class Manifests
 		}
 		
 		// Do it
-		if (file_put_contents($file, $this->getIndexHtml) === false)
+		if (file_put_contents($file, $this->getIndexHtml()) === false)
 		{
 			$error = lang('Manifests.cannotCreateIndexFile', [$file]);
 			log_message('warning', $error);
@@ -221,7 +262,7 @@ class Manifests
 	}
 	
 	// Generate content for index.html
-	protected function getIndexHtml(): string
+	public function getIndexHtml(): string
 	{
 		return '<!DOCTYPE html>
 <html>
@@ -237,18 +278,18 @@ class Manifests
 ';
 	}
 	
-	// Expand resource paths relative to the configured publish root and the manifest property
-	protected function expandPaths(&$resource, &$manifest)
+	// Expand resource paths relative to their configured bases and the manifest property
+	public function expandPaths(&$resource, &$manifest)
 	{
 		$resource->source = 
-			rtrim($this->config->publishRoot, '/') . '/' .
+			rtrim($this->config->publishBase, '/') . '/' .
 			trim($manifest->source, '/') . '/' .
-			ltrim($resource->source, '/');
+			trim($resource->source, '/');
 
 		$resource->destination =
-			rtrim($this->config->publishRoot, '/') . '/' .
+			rtrim($this->config->fileBase, '/') . '/' .
 			trim($manifest->destination, '/') . '/' .
-			ltrim($resource->destination ?? '', '/');
+			trim($resource->destination ?? '', '/') . '/';
 	}
 
 	// Parse a resource and copy it to the determined destination
@@ -275,9 +316,13 @@ class Manifests
 			throw FileNotFoundException::forFileNotFound($resource->source);
 		}
 		
-		return is_dir($resource->source) ?
-			$this->publishResourceDirectory($resource) :
-			$this->publishFile($resource->source, $resource->destination);
+		if (is_dir($resource->source))
+		{
+			$resource->source = rtrim($resource->source, '/') . '/';
+			return $this->publishResourceDirectory($resource);
+		}
+		
+		return $this->publishFile($resource->source, $resource->destination);
 	}
 
 	// Scan a directory and apply filters, publishing each file
@@ -304,35 +349,37 @@ class Manifests
 		}
 		
 		// Recursive, not flatten
-		elseif (! empty($resource->recursive))
+		if (! empty($resource->recursive))
 		{
 			$items = directory_map($resource->source);
-			return $this->publishDirectoryRecursive($items, $resource->source, $resource->destination);
+			return $this->publishDirectory($items, $resource->source, $resource->destination, $resource->filter ?? null);
 		}
 		
-		// Publish every file back to the destination
-		foreach ($files as $source => $destination)
-		{
-			$result = $this->publishFile($source, $destination);
-		}
-		
-		return $result;
+		// Single directory
+		$items = directory_map($resource->source);
+		$items = array_filter($items, 'is_string');
+		return $this->publishDirectory($items, $resource->source, $resource->destination, $resource->filter ?? null);
 	}
 
 	// Recursive-safe directory publish
-	protected function publishDirectoryRecursive(array $items, string $source, string $destination): bool
+	protected function publishDirectory(array $items, string $source, string $destination, $filter = null): bool
 	{
 		$result = true;
-		
+
 		foreach ($items as $dir => $item)
 		{
 			// Directory
 			if (is_array($item))
 			{
-				$result = $result && $this->publishDirectoryRecursive($item, $source . $dir, $destination . $dir);
+				$result = $result && $this->publishDirectory($item, $source . $dir, $destination . $dir, $filter);
 			}
-			// File
-			else
+			// File, no filter
+			elseif (empty($filter))
+			{
+				$result = $result && $this->publishFile($source . $item, $destination);
+			}
+			// File passes filter
+			elseif (preg_match($filter, $item))
 			{
 				$result = $result && $this->publishFile($source . $item, $destination);
 			}
@@ -348,8 +395,8 @@ class Manifests
 		{
 			return false;
 		}
-		
-		if (copy($source, $destination))
+
+		if (copy($source, $destination . basename($source)))
 		{
 			return true;
 		}
