@@ -72,28 +72,26 @@ class Manifests
 		return $result;
 	}
 
-	// Read in and verify a manifest from a file path
-	protected function manifestFromFile($path): ?object
+	// Read in and verify a manifest from a file
+	protected function manifestFromFile($file): ?object
 	{
 		// Make sure the file is valid and accessible
-		$file = new File($path);
-
-		if (! $file->isFile())
+		if (! is_file($file))
 		{
 			if ($this->config->silent)
 			{
-				$error = lang('Files.fileNotFound', [$path]);
+				$error = lang('Files.fileNotFound', [$file]);
 				log_message('warning', $error);
 				$this->messages[] = [$error, 'red'];
 
 				return null;
 			}
 			
-			throw FileNotFoundException::forFileNotFound($path);
+			throw FileNotFoundException::forFileNotFound($file);
 		}
 		
 		// Make sure the file is JSON
-		$manifest = file_get_contents($file->getRealPath());
+		$manifest = file_get_contents($file);
 		$manifest = json_decode($manifest);
 		if ($manifest === NULL)
 		{
@@ -101,13 +99,13 @@ class Manifests
 			
 			if ($this->config->silent)
 			{
-				$error = 'JSON Error #' . $errornum . '. ' . lang('Manifests.invalidFileFormat', [$path]);
+				$error = 'JSON Error #' . $errornum . '. ' . lang('Manifests.invalidFileFormat', [$file]);
 				log_message('warning', $error);
 				$this->messages[] = [$error, 'red'];
 				return null;
 			}
 			
-			throw ManifestsException::forInvalidFileFormat($path);
+			throw ManifestsException::forInvalidFileFormat($file);
 		}
 		
 		// Verify necessary fields
@@ -117,13 +115,13 @@ class Manifests
 			{
 				if ($this->config->silent)
 				{
-					$error = lang('Manifests.fieldMissingFromFile', [$field, $path]);
+					$error = lang('Manifests.fieldMissingFromFile', [$field, $file]);
 					log_message('warning', $error);
 					$this->messages[] = [$error, 'red'];
 					return null;
 				}
 			
-				throw ManifestsException::forFieldMissingFromFile($field, $path);
+				throw ManifestsException::forFieldMissingFromFile($field, $file);
 			}
 		}
 		
@@ -193,17 +191,16 @@ class Manifests
 	// Create index.html in the destination to prevent list access
 	protected function addIndexToDirectory($directory): bool
 	{
-		$path = $directory . 'index.html';
-		$file = new File($path);
+		$file = rtrim($directory, '/') . '/' . 'index.html';
 
 		// Check for existing file
-		if ($file->isFile())
+		if (is_file($file))
 		{
 			return true;
 		}
 		
 		// Directory should be writable but just in case...
-		if (! $file->isWritable())
+		if (! is_writable($file))
 		{
 			$error = lang('Manifests.directoryNotWritable', [$directory]);
 			log_message('warning', $error);
@@ -212,10 +209,9 @@ class Manifests
 		}
 		
 		// Do it
-		$file = $file->openFile('w');
-		if (! $file->fwrite($this->getIndexHtml))
+		if (file_put_contents($file, $this->getIndexHtml) === false)
 		{
-			$error = lang('Manifests.cannotCreateIndexFile', [$path]);
+			$error = lang('Manifests.cannotCreateIndexFile', [$file]);
 			log_message('warning', $error);
 			$this->messages[] = [$error, 'red'];
 			return false;
@@ -265,22 +261,21 @@ class Manifests
 		}
 		
 		// Make sure the source exists
-		$file = new File($resource->source);
-		if (! $file->getRealPath())
+		if (! file_exists($resource->source))
 		{
 			if ($this->config->silent)
 			{
-				$error = lang('Files.fileNotFound', [$path]);
+				$error = lang('Files.fileNotFound', [$resource->source]);
 				log_message('warning', $error);
 				$this->messages[] = [$error, 'red'];
 
 				return false;
 			}
 			
-			throw FileNotFoundException::forFileNotFound($path);
+			throw FileNotFoundException::forFileNotFound($resource->source);
 		}
 		
-		return $file->isDir() ?
+		return is_dir($resource->source) ?
 			$this->publishResourceDirectory($resource) :
 			$this->publishFile($resource->source, $resource->destination);
 	}

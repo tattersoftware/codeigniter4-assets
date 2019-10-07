@@ -51,7 +51,7 @@ class ManifestTest extends \CodeIgniter\Test\CIUnitTestCase
 	public function testManifestFromFile()
 	{
 		$method = $this->getPrivateMethodInvoker($this->manifests, 'manifestFromFile');
-		$path = SUPPORTPATH . 'Manifests/Widgets.json';
+		$path = MODULESUPPORTPATH . 'Manifests/Widgets.json';
 		
 		$manifest = $method($path);
 		
