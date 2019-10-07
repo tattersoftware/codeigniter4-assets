@@ -91,4 +91,57 @@ Manifests are JSON files with at least the following three properties:
 * `destination` - The directory (relative to `$config->fileBase`) for the assets
 * `resources` - The list of resources to publish, each with at least its own `source`.
 
-See [examples/](examples/) for some example manifest files.
+See [examples/](examples/) for some example manifest files compatible with their Composer
+sources.
+
+## Example
+
+You want to make a simple web app for browsing and uploading files, based on Bootstrap's
+frontend. Start your CodeIgniter 4 project, then add Bootstrap and DropzoneJS to handle
+the uploads:
+
+	composer require twbs/bootstrap enyo/dropzone
+
+Add this module as well:
+
+	composer require tatter\assets
+
+Create manifests and the config file in your project:
+```
+mkdir app/Manifests
+cp vendor/tatter/assets/examples/Dropzone.json app/Manifests/
+cp vendor/tatter/assets/examples/Bootstrap.json app/Manifests/
+cp vendor/tatter/assets/bin/Assets.php app/Config/
+```
+
+Edit your config file so Bootstrap will always load, and DropzoneJS will load on certain routes:
+
+```
+public $routes = [
+	'' => [
+		'vendor/bootstrap/bootstrap.min.css',
+		'vendor/bootstrap/bootstrap.bundle.min.js',
+	],
+	'files' => [
+		'vendor/dropzone/',
+	],
+];
+```
+
+Run the publish command to inject the assets into **public/vendor/**:
+
+	php spark assets:publish
+
+Finally, add the service methods to the header and footer of your view template so the CSS
+and JS tags are loaded automatically:
+```
+<head>
+	<?= service('assets')->css() ?>
+</head>
+<body>
+
+	...
+	
+	<?= service('assets')->js() ?>
+</body>
+```
