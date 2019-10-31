@@ -33,8 +33,12 @@ class DirectoryHandler implements AssetHandlerInterface
 	public function gatherFromDirectory(string $directory): array
 	{
 		$directory = rtrim($directory, '/') . '/';
-		$paths = [];
+		if (! is_dir($directory))
+		{
+			return [];
+		}
 
+		$paths = [];
 		foreach (directory_map($directory, 1) as $item)
 		{
 			// Make sure it is a desired asset file
