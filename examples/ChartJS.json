@@ -1,0 +1,10 @@
+{
+	"source": "nnnick/chartjs/dist",
+	"destination": "vendor/chartjs",
+	"resources": [
+		{
+			"source": ".",
+			"recursive": true
+		}
+	]
+}

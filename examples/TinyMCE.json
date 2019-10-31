@@ -1,0 +1,25 @@
+{
+	"source": "tinymce/tinymce",
+	"destination": "vendor/tinymce",
+	"resources": [
+		{
+			"source": ".",
+			"filter": "#\\.js$#"
+		},
+		{
+			"source": "plugins",
+			"destination": "plugins",
+			"recursive": true
+		},
+		{
+			"source": "skins",
+			"destination": "skins",
+			"recursive": true
+		},
+		{
+			"source": "themes",
+			"destination": "themes",
+			"recursive": true
+		}
+	]
+}

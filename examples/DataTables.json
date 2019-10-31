@@ -1,0 +1,10 @@
+{
+	"source": "datatables/datatables/media",
+	"destination": "vendor/datatables",
+	"resources": [
+		{
+			"source": ".",
+			"recursive": true
+		}
+	]
+}

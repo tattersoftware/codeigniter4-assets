@@ -1,0 +1,16 @@
+{
+	"source": "peekleon/datatables-all/extensions/Buttons",
+	"destination": "vendor/datatables",
+	"resources": [
+		{
+			"source": "css",
+			"destination": "css",
+			"filter": "#\\.css$#"
+		},
+		{
+			"source": "js",
+			"destination": "js",
+			"filter": "#\\.js$#"
+		}
+	]
+}

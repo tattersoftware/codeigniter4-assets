@@ -1,0 +1,10 @@
+{
+	"source": "npm-asset/sortablejs",
+	"destination": "vendor/sortablejs",
+	"resources": [
+		{
+			"source": ".",
+			"filter": "#\\.js$#"
+		}
+	]
+}
