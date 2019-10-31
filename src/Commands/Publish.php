@@ -15,6 +15,7 @@ class Publish extends BaseCommand
 	{
 		helper('inflector');
 		$manifests = Services::manifests();
+		$hashes = [];
 		
 		$count = 0;
 		foreach ($manifests->locate() as $path)
@@ -25,6 +26,13 @@ class Publish extends BaseCommand
 				$this->displayMessages($manifests->getMessages());
 				continue;
 			}
+			
+			// Check for duplicates
+			$hash = md5_file($path);
+			if (isset($hashes[$hash]))
+			{
+				continue;
+			}
 
 			if (! $manifests->publish($manifest))
 			{
@@ -33,6 +41,7 @@ class Publish extends BaseCommand
 				continue;
 			}
 			
+			$hashes[$hash] = true;
 			CLI::write('Published ' . basename($path));
 			$count++;
 		}
