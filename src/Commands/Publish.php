@@ -6,14 +6,14 @@ use Config\Services;
 
 class Publish extends BaseCommand
 {
-    protected $group       = 'Publication';
-    protected $name        = 'assets:publish';
-    protected $description = "Scans for manifest files and publishes matching assets.";
+	protected $group       = 'Publication';
+	protected $name        = 'assets:publish';
+	protected $description = "Scans for manifest files and publishes matching assets.";
 	protected $usage       = "assets:publish";
 
-    public function run(array $params)
-    {
-    	helper('inflector');
+	public function run(array $params)
+	{
+		helper('inflector');
 		$manifests = Services::manifests();
 		
 		$count = 0;
