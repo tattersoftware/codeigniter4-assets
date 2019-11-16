@@ -99,6 +99,9 @@ class Assets
 		{
 			$this->config->webBase = base_url($this->config->webBase);
 		}
+		
+		// Make sure webBase has a trailing slash
+		$this->config->webBase = rtrim($this->config->webBase, '/') . '/';
 	}
 
 	// Return the code block for gathered CSS assets as tags
