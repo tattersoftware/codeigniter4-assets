@@ -170,7 +170,7 @@ class Assets
 		foreach ($this->handlers as $class)
 		{
 			$handler     = new $class($this->config);
-            $this->paths = array_merge($handler->gather($this->route), $this->paths);
+			$this->paths = array_merge($handler->gather($this->route), $this->paths);
 		}
 		
 		$this->paths = array_unique($this->paths);
@@ -277,16 +277,16 @@ class Assets
 		// Clean up slashes
 		$this->route = trim($this->route, '/');
 
-        // Verify for {locale}
-        if (Config::get('App')->negotiateLocale)
-        {
-            $route = explode('/', $this->route);
-            if (count($route) && $route[0] == Services::request()->getLocale())
-            {
-                unset($route[0]);
-            }
-            $this->route = implode('/',$route);
-        }
+		// Verify for {locale}
+		if (Config::get('App')->negotiateLocale)
+		{
+			$route = explode('/', $this->route);
+			if (count($route) && $route[0] == Services::request()->getLocale())
+			{
+				unset($route[0]);
+			}
+			$this->route = implode('/',$route);
+		}
 
 		// If the route is empty then assume the default controller
 
