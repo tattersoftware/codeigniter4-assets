@@ -278,9 +278,11 @@ class Assets
 		$this->route = trim($this->route, '/');
 
         // Verify for {locale}
-        if(Config::get('App')->negotiateLocale) {
+        if (Config::get('App')->negotiateLocale)
+        {
             $route = explode('/', $this->route);
-            if(count($route) && $route[0] == Services::request()->getLocale()) {
+            if (count($route) && $route[0] == Services::request()->getLocale())
+            {
                 unset($route[0]);
             }
             $this->route = implode('/',$route);
