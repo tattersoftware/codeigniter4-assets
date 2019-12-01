@@ -170,7 +170,7 @@ class Assets
 		foreach ($this->handlers as $class)
 		{
 			$handler     = new $class($this->config);
-			$this->paths = array_merge($this->paths, $handler->gather($this->route));
+            $this->paths = array_merge($handler->gather($this->route), $this->paths);
 		}
 		
 		$this->paths = array_unique($this->paths);
