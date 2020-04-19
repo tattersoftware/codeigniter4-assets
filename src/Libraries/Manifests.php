@@ -340,11 +340,14 @@ class Manifests
 			{
 				$files = preg_grep($resource->filter, $files);
 			}
-			
+
 			// Publish every file back to the destination
 			foreach ($files as $file)
 			{
-				$result = $this->publishFile($file, $resource->destination);
+				if (is_file($file))
+				{
+					$result = $this->publishFile($file, $resource->destination);
+				}
 			}
 
 			return $result;
