@@ -22,6 +22,7 @@ class DirectoryHandlerTest extends AssetsTestCase
 		];
 
 		$paths = $this->assets->getPaths();
+		sort($paths);
 		
 		$this->assertEquals($expected, $paths);
 	}
@@ -32,12 +33,13 @@ class DirectoryHandlerTest extends AssetsTestCase
 		
 		$expected = [
 			'alert.js',
-			'styles.css',
-			'factories/factories.css',
 			'factories/edit/validate.js',
+			'factories/factories.css',
+			'styles.css',
 		];
 
 		$paths = $this->assets->getPaths();
+		sort($paths);
 		
 		$this->assertEquals($expected, $paths);
 	}
@@ -52,6 +54,7 @@ class DirectoryHandlerTest extends AssetsTestCase
 		];
 
 		$paths = $this->assets->getPaths();
+		sort($paths);
 		
 		$this->assertEquals($expected, $paths);
 	}
@@ -62,12 +65,13 @@ class DirectoryHandlerTest extends AssetsTestCase
 		
 		$expected = [
 			'alert.js',
-			'styles.css',
 			'factories/factories.css',
 			'factories/index/factoriesDataTable.js',
+			'styles.css',
 		];
 
 		$paths = $this->assets->getPaths();
+		sort($paths);
 		
 		$this->assertEquals($expected, $paths);
 	}
