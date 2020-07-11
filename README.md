@@ -25,7 +25,7 @@ Or, install manually by downloading the source files and adding the directory to
 ## Configuration (optional)
 
 The library's default behavior can be overridden or augment by its config file. Copy
-**bin/Assets.php** to **app/Config/Assets.php** and follow the instructions in the
+**examples/Assets.php** to **app/Config/Assets.php** and follow the instructions in the
 comments. If no config file is found the library will use its defaults.
 
 ## Usage
@@ -50,6 +50,7 @@ helpful for including pre-bundled libraries. `$routes` maps each route to an ass
 a directory of assets to load for that route.
 
 **Example:**
+
 ```
 public $routes = [
 	'' => [
@@ -91,7 +92,7 @@ Manifests are JSON files with at least the following three properties:
 * `destination` - The directory (relative to `$config->fileBase`) for the assets
 * `resources` - The list of resources to publish, each with at least its own `source`.
 
-See [examples/](examples/) for some example manifest files compatible with their Composer
+See [manifests/](manifests/) for some example manifest files compatible with their Composer
 sources.
 
 ## Example
@@ -104,14 +105,14 @@ the uploads:
 
 Add this module as well:
 
-	composer require tatter\assets
+	composer require tatter/assets
 
 Create manifests and the config file in your project:
 ```
 mkdir app/Manifests
-cp vendor/tatter/assets/examples/Dropzone.json app/Manifests/
-cp vendor/tatter/assets/examples/Bootstrap.json app/Manifests/
-cp vendor/tatter/assets/bin/Assets.php app/Config/
+cp vendor/tatter/assets/manifests/Dropzone.json app/Manifests/
+cp vendor/tatter/assets/manifests/Bootstrap.json app/Manifests/
+cp vendor/tatter/assets/examples/Assets.php app/Config/
 ```
 
 Edit your config file so Bootstrap will always load, and DropzoneJS will load on certain routes:
