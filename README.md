@@ -1,5 +1,8 @@
 # Tatter\Assets
+
 Lightweight asset loader for CodeIgniter 4
+
+[![](https://github.com/tattersoftware/codeigniter4-assets/workflows/PHPUnit/badge.svg)](https://github.com/tattersoftware/codeigniter4-assets/actions?query=workflow%3A%22PHPUnit)
 
 ## Quick Start
 

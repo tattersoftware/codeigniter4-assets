@@ -1,8 +1,9 @@
 <?php
 
 use CodeIgniter\Config\Services;
+use Tests\Support\AssetsTestCase;
 
-class RouteTest extends \ModuleTests\Support\AssetsTestCase
+class RouteTest extends AssetsTestCase
 {
 	public function testGetRouteDefault()
 	{

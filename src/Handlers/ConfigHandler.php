@@ -2,6 +2,7 @@
 
 use CodeIgniter\Config\BaseConfig;
 use Config\Services;
+use Tatter\Assets\Exceptions\AssetsException;
 use Tatter\Assets\Handlers\DirectoryHandler;
 use Tatter\Assets\Interfaces\AssetHandlerInterface;
 

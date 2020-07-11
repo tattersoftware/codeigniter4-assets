@@ -3,16 +3,18 @@
 use CodeIgniter\Files\Exceptions\FileException;
 use CodeIgniter\Files\Exceptions\FileNotFoundException;
 use Tatter\Assets\Exceptions\ManifestsException;
+use Tatter\Assets\Libraries\Manifests;
+use Tests\Support\ManifestsTestCase;
 use org\bovigo\vfs\vfsStream;
 
-class MethodsTest extends \ModuleTests\Support\ManifestsTestCase
+class MethodsTest extends ManifestsTestCase
 {	
 	public function testLocate()
 	{
 		$expected = [
-			MODULESUPPORTPATH . 'Manifests/Widgets.json',
-			MODULESUPPORTPATH . 'Manifests/frontend.json',
-			MODULESUPPORTPATH . 'Manifests/LawyerPack.json',
+			SUPPORTPATH . 'Manifests/LawyerPack.json',
+			SUPPORTPATH . 'Manifests/Widgets.json',
+			SUPPORTPATH . 'Manifests/frontend.json',
 		];
 		$paths = $this->manifests->locate();
 
@@ -21,7 +23,7 @@ class MethodsTest extends \ModuleTests\Support\ManifestsTestCase
 	
 	public function testParse()
 	{
-		$path = MODULESUPPORTPATH . 'Manifests/Widgets.json';
+		$path = SUPPORTPATH . 'Manifests/Widgets.json';
 		
 		$manifest = $this->manifests->parse($path);
 
@@ -160,7 +162,7 @@ class MethodsTest extends \ModuleTests\Support\ManifestsTestCase
 	{
 		// Get a new version the library that is silent
 		$this->config->silent = true;
-		$manifests = new \Tatter\Assets\Libraries\Manifests($this->config);
+		$manifests = new Manifests($this->config);
 		
 		$expected = [
 			[lang('Files.fileNotFound', ['missing.json']), 'red']

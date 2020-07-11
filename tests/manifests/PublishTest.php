@@ -3,10 +3,11 @@
 use CodeIgniter\Files\Exceptions\FileException;
 use CodeIgniter\Files\Exceptions\FileNotFoundException;
 use Tatter\Assets\Exceptions\ManifestsException;
+use Tests\Support\ManifestsTestCase;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
 
-class PublishTest extends \ModuleTests\Support\ManifestsTestCase
+class PublishTest extends ManifestsTestCase
 {
 	public function testExplicitFiles()
 	{
@@ -40,7 +41,7 @@ class PublishTest extends \ModuleTests\Support\ManifestsTestCase
 	
 	public function testRecursiveFlatten()
 	{
-		$path     = MODULESUPPORTPATH . 'Manifests/frontend.json';
+		$path     = SUPPORTPATH . 'Manifests/frontend.json';
 		$manifest = $this->manifests->parse($path);
 		$result   = $this->manifests->publish($manifest);
 
@@ -57,7 +58,7 @@ class PublishTest extends \ModuleTests\Support\ManifestsTestCase
 	
 	public function testRespectsFilters()
 	{
-		$path     = MODULESUPPORTPATH . 'Manifests/LawyerPack.json';
+		$path     = SUPPORTPATH . 'Manifests/LawyerPack.json';
 		$manifest = $this->manifests->parse($path);
 		$result   = $this->manifests->publish($manifest);
 

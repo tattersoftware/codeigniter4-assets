@@ -1,6 +1,10 @@
 <?php
 
-class ConfigHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
+use CodeIgniter\Test\CIUnitTestCase;
+use Tatter\Assets\Handlers\ConfigHandler;
+use Tatter\Assets\Libraries\Assets;
+
+class ConfigHandlerTest extends CIUnitTestCase
 {
 	/**
 	 * @var \Tatter\Assets\Libraries\Assets
@@ -16,9 +20,9 @@ class ConfigHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
     {
         parent::setUp();
 		
-		$this->config           = new \Tatter\Assets\Config\Assets;
+		$this->config           = new \Tatter\Assets\Config\Assets();
 		$this->config->silent   = false;
-		$this->config->fileBase = MODULESUPPORTPATH . 'assets/';
+		$this->config->fileBase = SUPPORTPATH . 'assets/';
 		
 		// Add mock route paths
 		$this->config->routes = [
@@ -31,10 +35,10 @@ class ConfigHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
 		];
 		
 		// Create the service
-		$this->assets = new \Tatter\Assets\Libraries\Assets($this->config);
+		$this->assets = new Assets($this->config);
 		
 		// Limit to just the ConfigHandler
-		$this->assets->setHandlers(['\Tatter\Assets\Handlers\ConfigHandler']);
+		$this->assets->setHandlers([ConfigHandler::class]);
 	}
 
 	public function testBasicRoute()
@@ -56,8 +60,8 @@ class ConfigHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
 		
 		$expected = [
 			'unrouted/machines.js',
-			'vendor/widget/colorful.css',
 			'vendor/widget/forms.css',
+			'vendor/widget/colorful.css',
 		];
 		
 		$paths = $this->assets->getPaths();
