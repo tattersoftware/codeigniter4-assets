@@ -1,22 +1,24 @@
 <?php
 
 use CodeIgniter\Config\Services;
+use Tatter\Assets\Handlers\DirectoryHandler;
+use Tests\Support\AssetsTestCase;
 
-class DirectoryHandlerTest extends \ModuleTests\Support\AssetsTestCase
+class DirectoryHandlerTest extends AssetsTestCase
 {
     public function setUp(): void
     {
         parent::setUp();
 		
 		// Limit to just the DirectoryHandler
-		$this->assets->setHandlers(['\Tatter\Assets\Handlers\DirectoryHandler']);
+		$this->assets->setHandlers([DirectoryHandler::class]);
 	}
 	
 	public function testDefaultRoute()
 	{
 		$expected = [
-			'styles.css',
 			'alert.js',
+			'styles.css',
 		];
 
 		$paths = $this->assets->getPaths();
@@ -29,8 +31,8 @@ class DirectoryHandlerTest extends \ModuleTests\Support\AssetsTestCase
 		$this->assets->setRoute('factories/edit');
 		
 		$expected = [
-			'styles.css',
 			'alert.js',
+			'styles.css',
 			'factories/factories.css',
 			'factories/edit/validate.js',
 		];
@@ -45,8 +47,8 @@ class DirectoryHandlerTest extends \ModuleTests\Support\AssetsTestCase
 		$this->assets->setRoute('workers/index');
 		
 		$expected = [
-			'styles.css',
 			'alert.js',
+			'styles.css',
 		];
 
 		$paths = $this->assets->getPaths();
@@ -59,8 +61,8 @@ class DirectoryHandlerTest extends \ModuleTests\Support\AssetsTestCase
 		$this->assets->setRoute('factories');
 		
 		$expected = [
-			'styles.css',
 			'alert.js',
+			'styles.css',
 			'factories/factories.css',
 			'factories/index/factoriesDataTable.js',
 		];

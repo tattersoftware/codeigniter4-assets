@@ -1,8 +1,10 @@
-<?php namespace ModuleTests\Support;
+<?php namespace Tests\Support;
 
+use CodeIgniter\Test\CIUnitTestCase;
+use Tatter\Assets\Libraries\Manifests;
 use org\bovigo\vfs\vfsStream;
 
-class ManifestsTestCase extends \CodeIgniter\Test\CIUnitTestCase
+class ManifestsTestCase extends CIUnitTestCase
 {
 	/**
 	 * @var \Tatter\Assets\Libraries\Manifests
@@ -21,13 +23,13 @@ class ManifestsTestCase extends \CodeIgniter\Test\CIUnitTestCase
 		// Start the virtual filesystem
 		$this->root = vfsStream::setup();
 		
-		$this->config              = new \Tatter\Assets\Config\Assets;
+		$this->config              = new \Tatter\Assets\Config\Assets();
 		$this->config->silent      = false;
 		$this->config->fileBase    = $this->root->url() . '/assets/';
-		$this->config->publishBase = MODULESUPPORTPATH;
+		$this->config->publishBase = SUPPORTPATH;
 		
 		// Create the service
-		$this->manifests = new \Tatter\Assets\Libraries\Manifests($this->config);
+		$this->manifests = new Manifests($this->config);
 		
 		// Create an example manifest (equivalent to Widgets.json)
 		$this->testManifest = (object)[
