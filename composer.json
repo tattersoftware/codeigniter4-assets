@@ -1,6 +1,6 @@
 {
 	"name": "tatter/assets",
-	"description": "Lightweight asset loader for CodeIgniter 4",
+	"description": "Asset publishing and loading for CodeIgniter 4",
 	"keywords": [
 		"codeigniter",
 		"codeigniter4",
@@ -32,7 +32,6 @@
 	},
 	"require-dev": {
 		"codeigniter4/codeigniter4": "dev-develop",
-		"fzaninotto/faker": "^1.9@dev",
 		"mikey179/vfsstream": "1.6.*",
 		"phpunit/phpunit" : "^8.5"
 	},
