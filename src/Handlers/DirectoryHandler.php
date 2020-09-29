@@ -1,13 +1,20 @@
 <?php namespace Tatter\Assets\Handlers;
 
-use CodeIgniter\Config\BaseConfig;
 use Config\Services;
+use Tatter\Assets\Config\Assets as AssetsConfig;
 use Tatter\Assets\Interfaces\AssetHandlerInterface;
 
 class DirectoryHandler implements AssetHandlerInterface
 {	
+	/**
+	 * Our configuration instance.
+	 *
+	 * @var AssetsConfig
+	 */
+	protected $config;
+
 	// Save the config and intiate the helper
-	public function __construct(BaseConfig $config = null)
+	public function __construct(AssetsConfig $config = null)
 	{
 		// Save the configuration
 		$this->config = $config ?? config('Assets');

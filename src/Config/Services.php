@@ -2,10 +2,13 @@
 
 use CodeIgniter\Config\BaseService;
 use CodeIgniter\View\RendererInterface;
+use Tatter\Assets\Libraries\Assets;
+use Tatter\Assets\Libraries\Manifests;
+use Tatter\Assets\Config\Assets as AssetsConfig;
 
 class Services extends BaseService
 {
-    public static function assets(BaseConfig $config = null, bool $getShared = true)
+    public static function assets(AssetsConfig $config = null, bool $getShared = true)
     {
 		if ($getShared)
 		{
@@ -18,10 +21,10 @@ class Services extends BaseService
 		{
 			$config = config('Assets');
 		}
-		return new \Tatter\Assets\Libraries\Assets($config);
+		return new Assets($config);
 	}
 	
-    public static function manifests(BaseConfig $config = null, bool $getShared = true)
+    public static function manifests(AssetsConfig $config = null, bool $getShared = true)
     {
 		if ($getShared)
 		{
@@ -34,6 +37,6 @@ class Services extends BaseService
 		{
 			$config = config('Assets');
 		}
-		return new \Tatter\Assets\Libraries\Manifests($config);
+		return new Manifests($config);
 	}
 }
