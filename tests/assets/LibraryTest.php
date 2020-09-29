@@ -10,8 +10,9 @@ class LibraryTest extends AssetsTestCase
 	{
 		$file   = 'alert.js';
 		$result = $this->assets->tag($file);
+		$suffix = '?v=' . filemtime($this->config->fileBase . $file);
 
-		$this->assertEquals('<script src="http://example.com/assets/alert.js?v=1594481279" type="text/javascript"></script>', $result);
+		$this->assertEquals('<script src="http://example.com/assets/alert.js' . $suffix . '" type="text/javascript"></script>', $result);
 	}
 
 	public function testTagRespectsConfigUseTimestamps()
