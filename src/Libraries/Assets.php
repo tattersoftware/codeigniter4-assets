@@ -186,7 +186,7 @@ class Assets
 		
 		// Check for the actual file for version control
 		$file = $this->config->fileBase . $path;
-		if (is_file($file))
+		if (is_file($file) && $this->config->useTimestamps)
 		{
 			$url .=  '?v=' . filemtime($file);
 		}

@@ -28,6 +28,9 @@ class Assets extends \Tatter\Assets\Config\Assets
 	// Starting directory for manifest publication
 	public $publishBase = ROOTPATH . 'vendor/';
 	
+	// Whether to append file modification timestamps on asset tags
+	public $useTimestamps = true;
+	
 	// Additional paths to load per route
 	// Relative to fileBase, no leading/trailing slashes
 	public $routes = [
