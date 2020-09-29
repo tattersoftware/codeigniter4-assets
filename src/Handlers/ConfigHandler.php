@@ -1,23 +1,30 @@
 <?php namespace Tatter\Assets\Handlers;
 
-use CodeIgniter\Config\BaseConfig;
 use Config\Services;
+use Tatter\Assets\Config\Assets as AssetsConfig;
 use Tatter\Assets\Exceptions\AssetsException;
 use Tatter\Assets\Handlers\DirectoryHandler;
 use Tatter\Assets\Interfaces\AssetHandlerInterface;
 
 class ConfigHandler implements AssetHandlerInterface
-{	
+{
+	/**
+	 * Our configuration instance.
+	 *
+	 * @var AssetsConfig
+	 */
+	protected $config;
+
 	/**
 	 * Instance of the directory handler for config routes
 	 * that point to directories instead of files.
 	 *
-	 * @var \Tatter\Assets\Handlers\DirectoryHandler
+	 * @var DirectoryHandler|null
 	 */
 	protected $directoryHandler;
 	
 	// Save the config
-	public function __construct(BaseConfig $config = null)
+	public function __construct(AssetsConfig $config = null)
 	{
 		// Save the configuration
 		$this->config = $config ?? config('Assets');

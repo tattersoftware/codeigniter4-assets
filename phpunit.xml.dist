@@ -24,7 +24,7 @@
 			</exclude>
 		</whitelist>
 	</filter>
-
+	
 	<logging>
 		<log type="coverage-html" target="build/logs/html"/>
 		<log type="coverage-clover" target="build/logs/clover.xml"/>
@@ -47,10 +47,6 @@
 		<!-- Directory containing the front controller (index.php) -->
 		<const name="PUBLICPATH" value="./vendor/codeigniter4/codeigniter4/public/"/>
 
-		<!-- https://getcomposer.org/xdebug -->
-		<env name="COMPOSER_DISABLE_XDEBUG_WARN" value="1"/>
-
-		<!-- Database configuration -->
 <!--	<env name="database.tests.hostname" value="localhost"/>  -->
 <!--	<env name="database.tests.database" value="tests"/>	     -->
 <!--	<env name="database.tests.username" value="tests_user"/> -->

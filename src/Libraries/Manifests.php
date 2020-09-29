@@ -408,13 +408,13 @@ class Manifests
 
 		if ($this->config->silent)
 		{
-			$error = lang('Files.cannotMove', [$source, $destination, -1]);
+			$error = lang('Files.cannotMove', [$source, $destination, 'unknown error']);
 			log_message('warning', $error);
 			$this->messages[] = [$error, 'red'];
 
 			return false;
 		}
 	
-		throw FileException::forUnableToMove($source, $destination, -1);
+		throw FileException::forUnableToMove($source, $destination, 'unknown error');
 	}
 }
