@@ -1,10 +1,20 @@
 {
-	"source": "datatables/datatables/media",
+	"source": "peekleon/datatables-all",
 	"destination": "vendor/datatables",
 	"resources": [
 		{
-			"source": ".",
+			"source": "media",
 			"recursive": true
+		},
+		{
+			"source": "extensions/Buttons/css",
+			"destination": "css",
+			"filter": "#\\.css$#"
+		},
+		{
+			"source": "extensions/Buttons/js",
+			"destination": "js",
+			"filter": "#\\.js$#"
 		}
 	]
 }
