@@ -4,6 +4,7 @@ use CodeIgniter\Files\File;
 use CodeIgniter\Files\Exceptions\FileException;
 use CodeIgniter\Files\Exceptions\FileNotFoundException;
 use Tatter\Assets\Exceptions\ManifestsException;
+use stdClass;
 
 class Manifests
 {
@@ -294,7 +295,14 @@ class Manifests
 			trim($resource->destination ?? '', '/') . '/';
 	}
 
-	// Parse a resource and copy it to the determined destination
+	/**
+	 * Parses a resource and copies it to
+	 * the determined destination.
+	 *
+	 * @param stdClass $resource
+	 *
+	 * @return bool
+	 */
 	protected function publishResource($resource): bool
 	{
 		// Validate the source
@@ -327,7 +335,15 @@ class Manifests
 		return $this->publishFile($resource->source, $resource->destination);
 	}
 
-	// Scan a directory and apply filters, publishing each file
+
+	/**
+	 * Scans a directory and applies filters,
+	 * publishing each file.
+	 *
+	 * @param stdClass $resource
+	 *
+	 * @return bool
+	 */
 	protected function publishResourceDirectory($resource): bool
 	{
 		$result = true;

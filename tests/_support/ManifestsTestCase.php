@@ -1,20 +1,33 @@
 <?php namespace Tests\Support;
 
 use CodeIgniter\Test\CIUnitTestCase;
+use Tatter\Assets\Config\Assets as AssetsConfig;
 use Tatter\Assets\Libraries\Manifests;
 use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
+use stdClass;
 
 class ManifestsTestCase extends CIUnitTestCase
 {
 	/**
-	 * @var \Tatter\Assets\Libraries\Manifests
+	 * @var vfsStreamDirectory|null
+	 */
+	protected $root;
+
+	/**
+	 * @var Manifests
 	 */
 	protected $manifests;
 	
 	/**
-	 * @var \Tatter\Assets\Config\Assets
+	 * @var AssetsConfig
 	 */
 	protected $config;
+
+	/**
+	 * @var stdClass
+	 */
+	protected $testManifest;
 
     public function setUp(): void
     {

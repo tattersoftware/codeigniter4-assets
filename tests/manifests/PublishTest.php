@@ -34,7 +34,7 @@ class PublishTest extends ManifestsTestCase
 		];
 		
 		$visitor = new vfsStreamStructureVisitor();
-		$result  = vfsStream::inspect($visitor, $this->root)->getStructure();
+		$result  = vfsStream::inspect($visitor, $this->root)->getStructure(); // @phpstan-ignore-line
 
 		$this->assertEquals($expected, $result);
 	}
@@ -48,7 +48,7 @@ class PublishTest extends ManifestsTestCase
 		$this->assertTrue($result);
 
 		$visitor = new vfsStreamStructureVisitor();
-		$result  = vfsStream::inspect($visitor, $this->root)->getStructure();
+		$result  = vfsStream::inspect($visitor, $this->root)->getStructure(); // @phpstan-ignore-line
 		
 		$this->assertTrue($this->root->hasChild('assets/vendor/frontend/frontend.css'));
 		$this->assertTrue($this->root->hasChild('assets/vendor/frontend/frontend.js'));

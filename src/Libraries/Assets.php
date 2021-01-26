@@ -28,6 +28,7 @@ use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Config\Config;
 use CodeIgniter\Config\Services;
 use CodeIgniter\Router\RouteCollectionInterface;
+use Tatter\Assets\Config\Assets as AssetsConfig;
 use Tatter\Assets\Exceptions\AssetsException;
 
 /*** CLASS ***/
@@ -36,14 +37,14 @@ class Assets
 	/**
 	 * Our configuration instance.
 	 *
-	 * @var \Tatter\Assets\Config\Assets
+	 * @var AssetsConfig
 	 */
 	protected $config;
 
 	/**
 	 * Array of asset paths detected for the current route
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	protected $paths;
 
@@ -61,7 +62,7 @@ class Assets
 	 * The URI to use for matching routed assets.
 	 * Defaults to uri_string()
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $route;
 
@@ -76,7 +77,7 @@ class Assets
 	/**
 	 * Route collection used to determine the default route (if needed).
 	 *
-	 * @var CodeIgniter\Router\RouteCollectionInterface
+	 * @var RouteCollectionInterface|null
 	 */
 	protected $collection;
 
@@ -147,7 +148,7 @@ class Assets
 		$tmpPaths = [];
 		foreach ($this->paths as $path)
 		{
-			if (strtolower(pathinfo($path, PATHINFO_EXTENSION) == $extension))
+			if (strtolower(pathinfo($path, PATHINFO_EXTENSION)) == $extension)
 			{
 				$tmpPaths[] = $path;
 			}
@@ -197,16 +198,13 @@ class Assets
 		{
 			case 'css':
 				return link_tag($url);
-			break;
 			
 			case 'js':
 				return script_tag($url);
-			break;
 			
 			case 'img':
 				$alt = ucfirst(pathinfo($path, PATHINFO_FILENAME));
 				return img($url, false, ['alt' => $alt]);
-			break;
 			
 			default:
 				if ($this->config->silent)
@@ -281,7 +279,7 @@ class Assets
 		if (Config::get('App')->negotiateLocale)
 		{
 			$route = explode('/', $this->route);
-			if (count($route) && $route[0] == Services::request()->getLocale())
+			if (count($route) && $route[0] == Services::request()->getLocale()) // @phpstan-ignore-line
 			{
 				unset($route[0]);
 			}
