@@ -33,10 +33,10 @@ class UrlHandler implements AssetHandlerInterface
 
 				$externalResources[] = $possibleUrl;
 
-			}elseif(preg_match($pattern, $possibleUrl) === false){
+			}//elseif(preg_match($pattern, $possibleUrl) === false){
 				// regex error
 				// raise a new exception type?
-			}
+			//}
 
 		}
 
