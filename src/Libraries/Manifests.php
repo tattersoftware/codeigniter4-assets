@@ -6,6 +6,9 @@ use CodeIgniter\Files\Exceptions\FileNotFoundException;
 use Tatter\Assets\Exceptions\ManifestsException;
 use stdClass;
 
+/**
+ * @deprecated Use the framework's Publisher instead
+ */
 class Manifests
 {
 	/**

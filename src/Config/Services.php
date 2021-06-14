@@ -24,6 +24,9 @@ class Services extends BaseService
 		return new Assets($config);
 	}
 	
+	/**
+	 * @deprecated
+	 */
     public static function manifests(AssetsConfig $config = null, bool $getShared = true)
     {
 		if ($getShared)

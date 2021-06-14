@@ -4,6 +4,9 @@ use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
 use Config\Services;
 
+/**
+ * @deprecated Use the framework's publish command
+ */
 class Publish extends BaseCommand
 {
 	protected $group       = 'Publication';
