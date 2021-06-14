@@ -4,6 +4,9 @@ use Config\Services;
 use Tatter\Assets\Config\Assets as AssetsConfig;
 use Tatter\Assets\Interfaces\AssetHandlerInterface;
 
+/**
+ * @deprecated Use the framework's FileCollection instead
+ */
 class DirectoryHandler implements AssetHandlerInterface
 {	
 	/**

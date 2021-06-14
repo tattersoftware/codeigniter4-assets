@@ -10,8 +10,11 @@ parameters:
 		- src/Config/Routes.php
 		- src/Views/*
 	ignoreErrors:
-		- '#Call to an undefined static method Config\\Services::manifests\(\)#'
-		- '#Unsafe usage of new static\(\)*#'
+		- '#Call to an undefined static method Config\\Services::[A-Za-z]+\(\)#'
+	universalObjectCratesClasses:
+		- CodeIgniter\Entity
+		- CodeIgniter\Entity\Entity
+		- Faker\Generator
 	scanDirectories:
 		- vendor/codeigniter4/codeigniter4/system/Helpers
 	dynamicConstantNames:

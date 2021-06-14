@@ -3,6 +3,9 @@
 use CodeIgniter\Exceptions\ExceptionInterface;
 use CodeIgniter\Exceptions\FrameworkException;
 
+/**
+ * @deprecated
+ */
 class ManifestsException extends FrameworkException implements ExceptionInterface
 {
 	public static function forInvalidFileFormat(string $path, string $reason)
