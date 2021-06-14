@@ -60,11 +60,12 @@ class ConfigHandlerTest extends CIUnitTestCase
 		
 		$expected = [
 			'unrouted/machines.js',
-			'vendor/widget/forms.css',
 			'vendor/widget/colorful.css',
+			'vendor/widget/forms.css',
 		];
 		
 		$paths = $this->assets->getPaths();
+		sort($paths);
 		
 		$this->assertEquals($expected, $paths);
 	}
