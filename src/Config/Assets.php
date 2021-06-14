@@ -16,9 +16,6 @@ class Assets extends BaseConfig
 	// Location of asset URLs
 	public $webBase = 'assets/';
 	
-	// Starting directory for manifest publication
-	public $publishBase = ROOTPATH . 'vendor/';
-	
 	// Whether to append file modification timestamps on asset tags
 	public $useTimestamps = true;
 	

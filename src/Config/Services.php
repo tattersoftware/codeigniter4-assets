@@ -23,23 +23,4 @@ class Services extends BaseService
 		}
 		return new Assets($config);
 	}
-	
-	/**
-	 * @deprecated
-	 */
-    public static function manifests(AssetsConfig $config = null, bool $getShared = true)
-    {
-		if ($getShared)
-		{
-			return static::getSharedInstance('manifests', $config);
-		}
-
-		// If no config was injected then load one
-		// Prioritizes app/Config if found
-		if (empty($config))
-		{
-			$config = config('Assets');
-		}
-		return new Manifests($config);
-	}
 }
