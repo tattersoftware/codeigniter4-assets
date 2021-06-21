@@ -26,8 +26,8 @@ final class RouteBundle extends Bundle
 
 		if ($config->useCache)
 		{
-			// Get the hash for these items
-			$key = md5(serialize($items));
+			// Use the hash of these items for the cache key
+			$key = 'assets-' . md5(serialize($items));
 
 			// If there's a cached version then return it
 			if ($bundle = cache($key))
@@ -67,6 +67,11 @@ final class RouteBundle extends Bundle
 			}
 		}
 
+		if (isset($key))
+		{
+			cache()->save($key, $bundle);
+		}
+
 		return $bundle;
 	}
 
@@ -83,7 +88,7 @@ final class RouteBundle extends Bundle
 	/**
 	 * Prepares the bundle for caching.
 	 *
-	 * @param Asset[]
+	 * @param Asset[] $data
 	 */
 	public function __unserialize(array $data): void
 	{

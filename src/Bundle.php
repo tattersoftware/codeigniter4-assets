@@ -112,7 +112,7 @@ abstract class Bundle
 	/**
 	 * Merges Assets from another Bundle.
 	 *
-	 * @param static $bundle
+	 * @param self $bundle
 	 *
 	 * @return $this
 	 */

@@ -45,7 +45,7 @@ EOD;
 
 	public function testCreateFromRouteUsesCache()
 	{
-		$key = md5(serialize([
+		$key = 'assets-' . md5(serialize([
 			'https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js',
 			FruitSalad::class,			
 		]));
@@ -54,11 +54,21 @@ EOD;
 		$this->assertEmpty(cache()->getCacheInfo());
 
 		// Place a fake bundle in the cache
-		cache()->save($key, $bundle = new RouteBundle());
+		cache()->save($key, new RouteBundle());
 
 		$result = RouteBundle::createFromRoute('foo');
 
-		$this->assertSame($bundle, $result);
+		$this->assertEquals(new RouteBundle(), $result);
+	}
+
+	public function testCreateFromRouteSavesToCache()
+	{
+		$this->config->useCache = true;
+		$this->assertEmpty(cache()->getCacheInfo());
+
+		$result = RouteBundle::createFromRoute('foo');
+
+		$this->assertNotEmpty(cache()->getCacheInfo());
 	}
 
 	public function testCreateFromRouteEmpty()
@@ -73,6 +83,7 @@ EOD;
 
 	public function testCreateFromRouteThrowsNotString()
 	{
+		// @phpstan-ignore-next-line
 		$this->config->routes['invalid'] = [true];
 
 		$this->expectException('InvalidArgumentException');
