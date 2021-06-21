@@ -23,8 +23,21 @@ final class AssetTest extends AssetsTestCase
 		$this->assertFalse($asset->isHead());
 	}
 
+	public function testUsesConfig()
+	{
+		$config = new AssetsConfig();
+		Asset::useConfig($config);
+
+		$result = Asset::config();
+
+		$this->assertSame($config, $result);
+		$this->assertNotSame(config(AssetsConfig::class), $result);
+	}
+
 	public function testLoadsConfig()
 	{
+		Asset::useConfig(null);
+
 		$config = Asset::config();
 
 		$this->assertSame(config(AssetsConfig::class), $config);

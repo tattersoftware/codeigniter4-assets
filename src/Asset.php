@@ -61,7 +61,7 @@ final class Asset
 			self::$config = config(AssetsConfig::class);
 
 			// Standardize formats
-			self::$config->url       = rtrim(self::$config->url, '/') . '/';
+			self::$config->uri       = rtrim(self::$config->uri, '/') . '/';
 			self::$config->directory = rtrim(self::$config->directory, '/') . '/';
 		}
 

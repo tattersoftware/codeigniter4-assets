@@ -4,6 +4,7 @@ use Tatter\Assets\Asset;
 use Tatter\Assets\Bundle;
 use Tatter\Assets\Config\Assets as AssetsConfig;
 use Tests\Support\AssetsTestCase;
+use Tests\Support\Bundles\FruitSalad;
 
 final class BundleTest extends AssetsTestCase
 {
@@ -18,6 +19,31 @@ final class BundleTest extends AssetsTestCase
 		$this->assertCount(1, $assets);
 		$this->assertInstanceOf(Asset::class, $assets[0]);
 		$this->assertEquals(Asset::createFromPath('apple.css'), $assets[0]);
+	}
+
+	public function testConstructorBundles()
+	{
+		$bundle = new class extends Bundle {
+			protected $bundles = [FruitSalad::class];
+		};
+
+		$assets = $bundle->getAssets();
+
+		$this->assertCount(2, $assets);
+		$this->assertEquals(Asset::createFromPath('apple.css'), $assets[0]);
+		$this->assertEquals(Asset::createFromPath('banana.js'), $assets[1]);
+	}
+	public function testConstructorStrings()
+	{
+		$bundle = new class extends Bundle {
+			protected $strings = ['foobar'];
+		};
+
+		$assets = $bundle->getAssets();
+
+		$this->assertCount(1, $assets);
+		$this->assertInstanceOf(Asset::class, $assets[0]);
+		$this->assertSame('foobar', (string) $assets[0]);
 	}
 
 	public function testStringable()
