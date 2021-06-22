@@ -25,6 +25,7 @@
 		</include>
 		<exclude>
 			<directory suffix=".php">./src/Views</directory>
+			<file>./src/Config/Filters.php</file>
 			<file>./src/Config/Routes.php</file>
 		</exclude>
 		<report>
