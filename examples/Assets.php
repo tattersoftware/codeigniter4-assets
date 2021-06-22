@@ -11,35 +11,69 @@
 *
 ***/
 
-class Assets extends \Tatter\Assets\Config\Assets
+use Tatter\Assets\Config\Assets as AssetsConfig;
+
+class Assets extends AssetsConfig
 {
-	// Whether to continue instead of throwing exceptions
-	public $silent = true;
-	
-	// Extensions to use when auto-detecting assets
-	public $extensions = ['css', 'js'];
-	
-	// Location of asset files in the filesystem
-	public $fileBase = FCPATH . 'assets/';
-	
-	// Location of asset URLs
-	public $webBase = 'https://example.com/assets/';
-	
-	// Starting directory for manifest publication
-	public $publishBase = ROOTPATH . 'vendor/';
-	
-	// Whether to append file modification timestamps on asset tags
+	//--------------------------------------------------------------------
+	// Library Behavior
+	//--------------------------------------------------------------------
+
+	/**
+	 * Asset URI base, relative to baseURL.
+	 *
+	 * @var string
+	 */
+	public $uri = 'assets/';
+
+	/**
+	 * Asset storage location in the filesystem.
+	 * Must be somewhere web accessible.
+	 *
+	 * @var string
+	 */
+	public $directory = FCPATH . 'assets/';
+
+	/**
+	 * Whether to append file modification timestamps on asset tags.
+	 * Makes it less likely for modified assets to remain cached.
+	 *
+	 * @var bool
+	 */
 	public $useTimestamps = true;
-	
-	// Additional paths to load per route
-	// Relative to fileBase, no leading/trailing slashes
-	public $routes = [
-		'' => [
-			'bootstrap/dist/css/bootstrap.min.css',
-			'bootstrap/dist/js/bootstrap.bundle.min.js',
-		],
-		'files/upload' => [
-			'dropzone/',
-		],
-	];
+
+	/**
+	 * Whether to cache bundles for faster route responses.
+	 *
+	 * @var bool
+	 */
+	public $useCache = ENVIRONMENT === 'production';
+
+	//--------------------------------------------------------------------
+	// Route Assets
+	//--------------------------------------------------------------------
+
+	/**
+	 * Assets to apply to each route. Routes may use * as a wildcard to
+	 * allow any valid character, similar to URL Helper's url_is().
+	 * Keys are routes; values are an array of any of the following:
+	 *   - Bundle class names
+	 *   - File paths (relative to $directory)
+	 *   - URLs
+	 *
+	 * Example:
+	 *     $routes = [
+	 *         '*' => [
+	 *             'https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js',
+	 *             \App\Bundles\Bootstrap::class,
+	 *          ],
+	 *         'admin/*' => [
+	 *             \Tatter\Frontend\Bundles\AdminLTE::class,
+	 *             'admin/login.js',
+	 *         ],
+	 *     ];
+	 *
+	 * @var array<string,string[]>
+	 */
+	public $routes = [];
 }
