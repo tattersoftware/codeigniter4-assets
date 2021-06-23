@@ -1,12 +1,18 @@
 # Changelog
 
-## [v3.0.0](https://github.com/tattersoftware/codeigniter4-assets/tree/v3.0.0) (2021-06-22)
+## [v3.0.0](https://github.com/tattersoftware/codeigniter4-assets/tree/v3.0.0) (2021-06-23)
 
 [Full Changelog](https://github.com/tattersoftware/codeigniter4-assets/compare/v2.3.0...v3.0.0)
 
 **Closed issues:**
 
 - Discussion: Route integration [\#16](https://github.com/tattersoftware/codeigniter4-assets/issues/16)
+- Feature: Asset Groups [\#15](https://github.com/tattersoftware/codeigniter4-assets/issues/15)
+- Feature: After filter [\#10](https://github.com/tattersoftware/codeigniter4-assets/issues/10)
+
+**Merged pull requests:**
+
+- Refactor [\#31](https://github.com/tattersoftware/codeigniter4-assets/pull/31) ([MGatner](https://github.com/MGatner))
 
 ## [v2.3.0](https://github.com/tattersoftware/codeigniter4-assets/tree/v2.3.0) (2021-06-14)
 
