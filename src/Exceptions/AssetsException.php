@@ -1,13 +1,12 @@
 <?php namespace Tatter\Assets\Exceptions;
 
-use CodeIgniter\Exceptions\ExceptionInterface;
-use CodeIgniter\Exceptions\FrameworkException;
+use RuntimeException;
 
-class AssetsException extends FrameworkException implements ExceptionInterface
+class AssetsException extends RuntimeException
 {
-	public static function forUnsupportedExtension(string $extension = null)
+	public static function forUnsupportedType(string $type = null)
 	{
-		return new static(lang('Assets.unsupportedExtension', [$extension]));
+		return new static(lang('Assets.unsupportedType', [$type ?? 'empty']));
 	}
 	
 	public static function forInvalidConfigItem(string $route)

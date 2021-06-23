@@ -1,3 +1,0 @@
-function formValidate() {
-	return true;
-}

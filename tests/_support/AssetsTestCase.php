@@ -1,29 +1,27 @@
 <?php namespace Tests\Support;
 
 use CodeIgniter\Test\CIUnitTestCase;
-use Tatter\Assets\Libraries\Assets;
+use Tatter\Assets\Config\Assets as AssetsConfig;
+use Tatter\Assets\Asset;
 
-class AssetsTestCase extends CIUnitTestCase
+abstract class AssetsTestCase extends CIUnitTestCase
 {
 	/**
-	 * @var \Tatter\Assets\Libraries\Assets
-	 */
-	protected $assets;
-
-	/**
-	 * @var \Tatter\Assets\Config\Assets
+	 * @var AssetsConfig
 	 */
 	protected $config;
 
-    public function setUp(): void
+	/**
+	 * Preps the config for the test directory.
+	 */
+    protected function setUp(): void
     {
         parent::setUp();
 
-		$this->config           = new \Tatter\Assets\Config\Assets();
-		$this->config->silent   = false;
-		$this->config->fileBase = SUPPORTPATH . 'assets/';
+		$this->config                = config(AssetsConfig::class);
+		$this->config->directory     = SUPPORTPATH . 'Files/';
+		$this->config->useTimestamps = false; // These make testing much harder
 
-		// Create the service
-		$this->assets = new Assets($this->config);
+		Asset::useConfig($this->config);
 	}
 }

@@ -1,20 +1,20 @@
 # Tatter\Assets
 
-Asset publishing and loading for CodeIgniter 4
+Asset handling for CodeIgniter 4
 
 [![](https://github.com/tattersoftware/codeigniter4-assets/workflows/PHPUnit/badge.svg)](https://github.com/tattersoftware/codeigniter4-assets/actions?query=workflow%3A%22PHPUnit)
+[![](https://github.com/tattersoftware/codeigniter4-assets/workflows/PHPStan/badge.svg)](https://github.com/tattersoftware/codeigniter4-assets/actions?query=workflow%3A%22PHPStan)
+[![Coverage Status](https://coveralls.io/repos/github/tattersoftware/codeigniter4-assets/badge.svg?branch=develop)](https://coveralls.io/github/tattersoftware/codeigniter4-assets?branch=develop)
 
 ## Quick Start
 
 1. Install with Composer: `> composer require tatter/assets`
-2. Put CSS & JS files in: **public/assets**
-3. Add additional assets to config: **app/Config/Assets.php**
-3. Add in head tag: `<?= service('assets')->css() ?>`
-4. Add to footer: `<?= service('assets')->js() ?>`
+2. Enable the `assets` filter in **app/Config/Filters.php**
+3. Config assets for your routes: **app/Config/Assets.php**
 
 ## Features
 
-Provides out-of-the-box asset loading for CSS and JavaScript files for CodeIgniter 4
+Provides automated asset loading for CSS and JavaScript files for CodeIgniter 4.
 
 ## Installation
 
@@ -25,78 +25,153 @@ and always be up-to-date:
 Or, install manually by downloading the source files and adding the directory to
 `app/Config/Autoload.php`.
 
-## Configuration (optional)
+## Configuration
 
-The library's default behavior can be overridden or augment by its config file. Copy
+The library's default behavior can be overridden or augmented by its config file. Copy
 **examples/Assets.php** to **app/Config/Assets.php** and follow the instructions in the
-comments. If no config file is found the library will use its defaults.
+comments. If no config file is found the library will use its default.
+
+In order to use the `AssetsFilter` you must add apply it to your target routes. The filter
+does its own route matching so it is safe to apply it globally in **app/Config/Filters.php**.
+See [Controller Filters](https://codeigniter.com/user_guide/incoming/filters.html) for more
+info, or the **Example** section below.
 
 ## Usage
 
-If installed correctly CodeIgniter 4 will detect and autoload the library, service, and
-config. Use the library methods `css()` and `js()` to display tags for the route-specific assets:
-`<?= service('assets')->css() ?>`
+If installed correctly CodeIgniter 4 will detect and autoload the library, config, and filter.
 
-## Structure
+### Asset
 
-The library searches the assets directory (default: **public/assets**) for files matching
-the current route, loading them in a cascading fashion for each route segment.
+You may use the `Asset` class to build a tag for a single asset file:
+```php
+<?php
 
-**Example:** https://example.com/users/view/12
+use Tatter\Assets\Asset;
 
-The library will first load any root assets (`public/assets/*.css *.js`), then assets in
-the "users" subfolder (`public/assets/users/`), then "view" subfolder, then "12" subfolder.
-Any missing or invalid folders are ignored.
-
-Additional assets may be specified from the config variable `$routes` - this is particularly
-helpful for including pre-bundled libraries. `$routes` maps each route to an asset file or
-a directory of assets to load for that route.
-
-**Example:**
-
+$asset = new Asset('<link href="/assets/styles.css" rel="stylesheet" type="text/css" />');
+echo view('main', ['assset' => $asset]);
 ```
-public $routes = [
-	'' => [
+... then in your view file:
+
+```php
+<html>
+<head>
+	<title>Hello World</title>
+	<?= $asset ?>
+</head>
+<body>
+	...
+```
+
+The `Asset` class also comes with some named constructors to help you create the tag strings:
+* `createFromPath(string $path)` - Returns an `Asset` from a file relative to your config's `$directory`.
+* `createFromUri(string $uri, string $type = null)` - Returns an `Asset` from a remote URL, with an optional type (`css`, `js`, `img`; `null` to detect).
+
+Named constructors make the above example much easier:
+```php
+<html>
+<head>
+	<title>Hello World</title>
+	<?= \Tatter\Assets\Asset::createFromPath('styles.css') ?>
+</head>
+<body>
+	...
+```
+
+### Bundle
+
+Typically a project will need more than one single asset. The `Bundle` class allows you to collect
+multiple `Asset`s into a single instance. Use the `head()` and `body()` methods to return the `Asset`s
+destined for each tag, formatted as blocks of tags.
+
+`Bundle`s can be created one of two ways.
+
+#### Class Properties
+
+Create your own `Bundle` class and use these properties to stage the assets you want it to have:
+	* `$bundles`: Names of other `Bundle` classes to merge with.
+	* `$paths`: Relative file paths to make into `Asset`s.
+	* `$uris`: URLs to make into `Asset`s.
+	* `$strings`: Direct strings to pass into an `Asset`.
+
+Example:
+```php
+<?php namespace App\Bundles;
+
+use Tatter\Assets\Bundle;
+
+class FrontendBundle extends Bundle
+{
+	protected $bundles = [
+		StylesBundle::class,
+	];
+
+	protected $paths = [
 		'bootstrap/dist/css/bootstrap.min.css',
-		'bootstrap/dist/js/bootstrap.bundle.min.js'
-	],
-	'files/upload' => [
-		'vendor/dropzone'
-	]
-];
+		'bootstrap/dist/js/bootstrap.bundle.min.js',
+	];
+
+	protected $uris = [
+		'https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js',
+	];
+}
 ```
 
-This tells the library to load the Bootstrap assets for every route (`''`) without having
-to move it from its pre-bundled subdirectory. It also will load any assets in the `dropzone`
-directory for the specified route.
+#### define()
 
-## Publishing
+`Bundle` also comes with an initialization method: `define()`. Supply your own version of this
+method along with the fluent-style definition methods to create more complicated collections.
 
-**Assets** can publish resources for you. This is particularly helpful if you need files
-from a vendor package but don't want to host the package in your **public/** folder.
-The **Manifests** library uses manifest files to locate and copy matching assets into your
-assets folder (defined by `$config->fileBase`). This library includes a convenience command
-to assist with asset publication:
+Example:
+```php
+<?php namespace App\Bundles;
 
-	php spark assets:publish
+use Tatter\Assets\Asset;
+use Tatter\Assets\Bundle;
 
-By default `assets:publish` will scan all namespaces for JSON files in **{namespaceRoot}/Manifests**
-and (assuming they are valid) will publish the assets defined there. Behavior is
-customizable using **Config/Assets.php** but the default is to copy assets into
-**public/assets/vendor/** into the subdirectory defined in the manifest.
+class ColorBundle extends Bundle
+{
+	protected function define()
+	{
+		$this
+			->add(Asset::createFromPath('styles.css')) // Add individual Assets
+			->merge($someOtherBundle); // Or combine multiple Bundles
 
-If you are using version control it is recommended to exclude your asset publish directory,
-for example by adding **public/assets/vendor/** to your **.gitignore** file.
+		// Create more complex Assets
+		$source = '<script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js" type="text/javascript"></script>';
+		$inHead = true; // Force a JavaScript Asset to the <head> tag
+		$asset  = new Asset($source, $inHead);
+	}
+}
+```
 
-### Manifests
+### Filter
 
-Manifests are JSON files with at least the following three properties:
-* `source` - The directory (relative to `$config->publishBase`) of the assets
-* `destination` - The directory (relative to `$config->fileBase`) for the assets
-* `resources` - The list of resources to publish, each with at least its own `source`.
+If you configured the `AssetsFilter` (see above) to load for your routes, you must also associate
+the specific assets or bundles per route. Use the config ``$routes`` property, where the route
+pattern is the key and the values are arrays of file paths, URLs, or bundle class names. E.g.:
 
-See [manifests/](manifests/) for some example manifest files compatible with their Composer
-sources.
+```php
+<?php namespace Config;
+
+use Tatter\Assets\Config\Assets as AssetsConfig;
+
+class Assets extends AssetsConfig
+{
+	public $routes = [
+		'*' => [
+			'bootstrap/bootstrap.min.css',
+			'bootstrap/bootstrap.bundle.min.js',
+			'font-awesome/css/all.min.css',
+			'styles/main.css',
+		],
+		'files' => [
+			'dropzone/dropzone.min.css',
+			'dropzone/dropzone.min.js',
+		],
+	];
+}
+```
 
 ## Example
 
@@ -106,46 +181,99 @@ the uploads:
 
 	composer require twbs/bootstrap enyo/dropzone
 
+> Note: You will need to copy files from **vendor** to **public/assets/** to make them
+	accessible, or use the framework's `Publisher` class to handle this for you.
+
 Add this module as well:
 
 	composer require tatter/assets
 
-Create manifests and the config file in your project:
-```
-mkdir app/Manifests
-cp vendor/tatter/assets/manifests/Dropzone.json app/Manifests/
-cp vendor/tatter/assets/manifests/Bootstrap.json app/Manifests/
-cp vendor/tatter/assets/examples/Assets.php app/Config/
+Edit your **Filters.php** config file to enable the `AssetsFilter` on all routes:
+
+```php
+	/**
+	 * List of filter aliases that are always
+	 * applied before and after every request.
+	 *
+	 * @var array
+	 */
+	public $globals = [
+		'before' => [
+			// 'honeypot',
+			// 'csrf',
+		],
+		'after'  => [
+			'assets' => ['except' => 'api/*'],
+		],
+	];
 ```
 
-Edit your config file so Bootstrap will always load, and DropzoneJS will load on certain routes:
+Create a new `Bundle` to define your Bootstrap files in **app/Bundles/DropzoneJS.php**:
+
+```php
+<?php namespace App\Bundles;
+
+use Tatter\Assets\Bundle;
+
+class DropzoneJS extends Bundle
+{
+	protected $paths = [
+		'dropzone/dropzone.min.css',
+		'dropzone/dropzone.min.js',
+	];
+}
+```
+
+Then copy **examples/Assets.php** from this repo to **app/Config/** and edit it so Bootstrap
+will load on every route and DropzoneJS will load on specific routes:
 
 ```
 public $routes = [
-	'' => [
-		'vendor/bootstrap/bootstrap.min.css',
-		'vendor/bootstrap/bootstrap.bundle.min.js',
+	'*' => [
+		'bootstrap/dist/css/bootstrap.min.css',
+		'bootstrap/dist/js/bootstrap.bundle.min.js',
 	],
-	'files' => [
-		'vendor/dropzone/',
+	'files/*' => [
+		\App\Bundles\DropzoneJS::class,
+	],
+	'upload' => [
+		\App\Bundles\DropzoneJS::class,
 	],
 ];
 ```
 
-Run the publish command to inject the assets into **public/vendor/**:
+> Note: We could have made a `Bundle` for Bootstrap as well but since they are only needed for on route this is just as easy.
 
-	php spark assets:publish
+If you finished all that then your assets should be injected into your `<head>` and `<body>` tags accordingly.
 
-Finally, add the service methods to the header and footer of your view template so the CSS
-and JS tags are loaded automatically:
-```
+Your view file:
+```html
+<html>
 <head>
-	<?= service('assets')->css() ?>
+	<title>File Upload</title>
 </head>
 <body>
-
-	...
-	
-	<?= service('assets')->js() ?>
+	<h1>Hello</h1>
+	<p>Put your upload form here.</p>
 </body>
+</html>
+```
+
+... served as:
+```html
+<html>
+<head>
+	<title>File Upload</title>
+
+<link href="http://example.com/assets/bootstrap/dist/css/bootstrap.min.css?v=1234151511412" rel="stylesheet" type="text/css" />
+<link href="http://example.com/assets/dropzone/dropzone.min.css?v=12341515141241" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<h1>Hello</h1>
+	<p>Put your upload form here.</p>
+
+<script src="http://example.com/assets/bootstrap/dist/js/bootstrap.bundle.min.js?v=12341515735743" type="text/javascript"></script>
+<script src="http://example.com/assets/dropzone/dropzone.min.js?v=12341515573424" type="text/javascript"></script>
+</body>
+</html>
 ```
