@@ -10,7 +10,7 @@ Asset handling for CodeIgniter 4
 
 1. Install with Composer: `> composer require tatter/assets`
 2. Enable the `assets` filter in **app/Config/Filters.php**
-3. Config assets for your routes: **app/Config/Assets.php**
+3. Assign `$routes` to their assets in **app/Config/Assets.php**
 
 ## Features
 
@@ -227,7 +227,7 @@ class DropzoneJS extends Bundle
 Then copy **examples/Assets.php** from this repo to **app/Config/** and edit it so Bootstrap
 will load on every route and DropzoneJS will load on specific routes:
 
-```
+```php
 public $routes = [
 	'*' => [
 		'bootstrap/dist/css/bootstrap.min.css',
