@@ -1,4 +1,6 @@
-<?php namespace Tatter\Assets;
+<?php
+
+namespace Tatter\Assets;
 
 /**
  * Bundle Class
@@ -12,185 +14,166 @@
  */
 abstract class Bundle
 {
-	//--------------------------------------------------------------------
-	// Initial Assets
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
+    // Initial Assets
+    //--------------------------------------------------------------------
 
-	/**
-	 * The Assets.
-	 *
-	 * @var Asset[]
-	 */
-	protected $assets = [];
+    /**
+     * The Assets.
+     *
+     * @var Asset[]
+     */
+    protected $assets = [];
 
-	/**
-	 * Bundle classes to merge with this Bundle.
-	 *
-	 * @var string[]
-	 */
-	protected $bundles = [];
+    /**
+     * Bundle classes to merge with this Bundle.
+     *
+     * @var string[]
+     */
+    protected $bundles = [];
 
-	/**
-	 * Paths to include in this Bundle.
-	 *
-	 * @var string[]
-	 */
-	protected $paths = [];
+    /**
+     * Paths to include in this Bundle.
+     *
+     * @var string[]
+     */
+    protected $paths = [];
 
-	/**
-	 * URIs to include in this Bundle.
-	 *
-	 * @var string[]
-	 */
-	protected $uris = [];
+    /**
+     * URIs to include in this Bundle.
+     *
+     * @var string[]
+     */
+    protected $uris = [];
 
-	/**
-	 * Strings to include in this Bundle.
-	 *
-	 * @var string[]
-	 */
-	protected $strings = [];
+    /**
+     * Strings to include in this Bundle.
+     *
+     * @var string[]
+     */
+    protected $strings = [];
 
-	//--------------------------------------------------------------------
-	// Asset Handling
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
+    // Asset Handling
+    //--------------------------------------------------------------------
 
-	/**
-	 * Processes the properties into Assets and calls define().
-	 */
-	final public function __construct()
-	{
-		// Put child Bundles first so they are more likely to be overwritten
-		foreach ($this->bundles as $bundle)
-		{
-			$this->merge(new $bundle());
-		}
+    /**
+     * Processes the properties into Assets and calls define().
+     */
+    final public function __construct()
+    {
+        // Put child Bundles first so they are more likely to be overwritten
+        foreach ($this->bundles as $bundle) {
+            $this->merge(new $bundle());
+        }
 
-		// Create Assets out of the remaining preoperties
-		foreach ($this->uris as $uri)
-		{
-			$this->assets[] = Asset::createFromUri($uri);
-		}
+        // Create Assets out of the remaining preoperties
+        foreach ($this->uris as $uri) {
+            $this->assets[] = Asset::createFromUri($uri);
+        }
 
-		foreach ($this->paths as $uri)
-		{
-			$this->assets[] = Asset::createFromPath($uri);
-		}
+        foreach ($this->paths as $uri) {
+            $this->assets[] = Asset::createFromPath($uri);
+        }
 
-		foreach ($this->strings as $string)
-		{
-			$this->assets[] = new Asset($string);
-		}
+        foreach ($this->strings as $string) {
+            $this->assets[] = new Asset($string);
+        }
 
-		$this->define();
-	}
+        $this->define();
+    }
 
-	/**
-	 * Applies any initial inputs after the constructor.
-	 * This method is a stub to be implemented by child classes.
-	 *
-	 * @return void
-	 */
-	protected function define(): void
-	{
-	}
+    /**
+     * Applies any initial inputs after the constructor.
+     * This method is a stub to be implemented by child classes.
+     */
+    protected function define(): void
+    {
+    }
 
-	/**
-	 * Appends an Asset to the list.
-	 *
-	 * @param Asset $asset
-	 *
-	 * @return $this
-	 */
-	final public function add(Asset $asset)
-	{
-		$this->assets[] = $asset;
+    /**
+     * Appends an Asset to the list.
+     *
+     * @return $this
+     */
+    final public function add(Asset $asset)
+    {
+        $this->assets[] = $asset;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Merges Assets from another Bundle.
-	 *
-	 * @param self $bundle
-	 *
-	 * @return $this
-	 */
-	final public function merge(Bundle $bundle)
-	{
-		foreach ($bundle->getAssets() as $asset)
-		{
-			$this->add($asset);
-		}
+    /**
+     * Merges Assets from another Bundle.
+     *
+     * @param self $bundle
+     *
+     * @return $this
+     */
+    final public function merge(Bundle $bundle)
+    {
+        foreach ($bundle->getAssets() as $asset) {
+            $this->add($asset);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Optimizes and returns the list of Assets.
-	 *
-	 * @return Asset[]
-	 */
-	final public function getAssets(): array
-	{
-		$this->assets = array_values(array_unique($this->assets)); // array_unique works on stringables
+    /**
+     * Optimizes and returns the list of Assets.
+     *
+     * @return Asset[]
+     */
+    final public function getAssets(): array
+    {
+        $this->assets = array_values(array_unique($this->assets)); // array_unique works on stringables
 
-		return $this->assets;
-	}
+        return $this->assets;
+    }
 
-	//--------------------------------------------------------------------
-	// Display Methods
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
+    // Display Methods
+    //--------------------------------------------------------------------
 
-	/**
-	 * Concatenates Assets for the <head> tag.
-	 *
-	 * @return string
-	 */
-	final public function head(): string
-	{
-		return $this->toString(true);
-	}
+    /**
+     * Concatenates Assets for the <head> tag.
+     */
+    final public function head(): string
+    {
+        return $this->toString(true);
+    }
 
-	/**
-	 * Concatenates Assets for the <body> tag.
-	 *
-	 * @return string
-	 */
-	final public function body(): string
-	{
-		return $this->toString(false);
-	}
+    /**
+     * Concatenates Assets for the <body> tag.
+     */
+    final public function body(): string
+    {
+        return $this->toString(false);
+    }
 
-	/**
-	 * Concatenates all Assets. Probably never very useful.
-	 *
-	 * @return string
-	 */
-	final public function __toString(): string
-	{
-		return $this->toString();		
-	}
+    /**
+     * Concatenates all Assets. Probably never very useful.
+     */
+    final public function __toString(): string
+    {
+        return $this->toString();
+    }
 
-	/**
-	 * Concatenates Assets for the <body> tag.
-	 *
-	 * @param bool|null $head Whether to filter on head/body tag; null returns both
-	 *
-	 * @return string
-	 */
-	private function toString(bool $head = null): string
-	{
-		$lines = [];
+    /**
+     * Concatenates Assets for the <body> tag.
+     *
+     * @param bool|null $head Whether to filter on head/body tag; null returns both
+     */
+    private function toString(?bool $head = null): string
+    {
+        $lines = [];
 
-		foreach ($this->getAssets() as $asset)
-		{
-			if ($head === null || $head === $asset->isHead())
-			{
-				$lines[] = (string) $asset;
-			}
-		}
+        foreach ($this->getAssets() as $asset) {
+            if ($head === null || $head === $asset->isHead()) {
+                $lines[] = (string) $asset;
+            }
+        }
 
-		return implode(PHP_EOL, $lines);
-	}
+        return implode(PHP_EOL, $lines);
+    }
 }

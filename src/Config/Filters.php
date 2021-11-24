@@ -1,4 +1,6 @@
-<?php namespace Tatter\Assets\Config;
+<?php
+
+namespace Tatter\Assets\Config;
 
 use Config\Filters;
 use Tatter\Assets\Filters\AssetsFilter;
