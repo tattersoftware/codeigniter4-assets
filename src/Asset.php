@@ -1,4 +1,6 @@
-<?php namespace Tatter\Assets;
+<?php
+
+namespace Tatter\Assets;
 
 use CodeIgniter\Files\File;
 use Tatter\Assets\Config\Assets as AssetsConfig;
@@ -11,167 +13,150 @@ use Tatter\Assets\Exceptions\AssetsException;
  */
 final class Asset
 {
-	public const IMAGE_EXTENSIONS = [
-		'apng',
-		'avif',
-		'gif',
-		'bmp',
-		'ico',
-		'img',
-		'jpeg',
-		'jpg',
-		'png',
-		'svg',
-		'tff',
-		'webp',
-	];
+    public const IMAGE_EXTENSIONS = [
+        'apng',
+        'avif',
+        'gif',
+        'bmp',
+        'ico',
+        'img',
+        'jpeg',
+        'jpg',
+        'png',
+        'svg',
+        'tff',
+        'webp',
+    ];
 
-	/**
-	 * @var AssetsConfig|null
-	 */
-	private static $config;
+    /**
+     * @var AssetsConfig|null
+     */
+    private static $config;
 
-	/**
-	 * Asset content, ready for injection.
-	 *
-	 * @var string
-	 */
-	private $tag;
+    /**
+     * Asset content, ready for injection.
+     *
+     * @var string
+     */
+    private $tag;
 
-	/**
-	 * Whether the content should be placed in the head tag.
-	 *
-	 * @var bool
-	 */
-	private $head;
+    /**
+     * Whether the content should be placed in the head tag.
+     *
+     * @var bool
+     */
+    private $head;
 
-	//--------------------------------------------------------------------
-	// Configuration
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
+    // Configuration
+    //--------------------------------------------------------------------
 
-	/**
-	 * Loads and returns the configuration.
-	 *
-	 * @return AssetsConfig
-	 */	 
-	public static function config(): AssetsConfig
-	{
-		if (self::$config === null)
-		{
-			self::$config = config(AssetsConfig::class);
+    /**
+     * Loads and returns the configuration.
+     */
+    public static function config(): AssetsConfig
+    {
+        if (self::$config === null) {
+            self::$config = config(AssetsConfig::class);
 
-			// Standardize formats
-			self::$config->uri       = rtrim(self::$config->uri, '/') . '/';
-			self::$config->directory = rtrim(self::$config->directory, '/') . '/';
-		}
+            // Standardize formats
+            self::$config->uri       = rtrim(self::$config->uri, '/') . '/';
+            self::$config->directory = rtrim(self::$config->directory, '/') . '/';
+        }
 
-		return self::$config;
-	}
+        return self::$config;
+    }
 
-	/**
-	 * Changes the configuration. Should only be used during testing.
-	 *
-	 * @param AssetsConfig|null $config
-	 *
-	 * @internal
-	 */	 
-	public static function useConfig(?AssetsConfig $config)
-	{
-		self::$config = $config;
-	}
+    /**
+     * Changes the configuration. Should only be used during testing.
+     *
+     * @internal
+     */
+    public static function useConfig(?AssetsConfig $config)
+    {
+        self::$config = $config;
+    }
 
-	//--------------------------------------------------------------------
-	// Named Constructors
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
+    // Named Constructors
+    //--------------------------------------------------------------------
 
-	/**
-	 * Creates a new Asset from a local file.
-	 *
-	 * @param string $path File path relative to the configured directory
-	 *
-	 * @return self
-	 */
-	public static function createFromPath(string $path): self
-	{
-		$config = self::config();
-		$path   = ltrim($path, '/');
-		$file   = new File($config->directory . $path, true);
+    /**
+     * Creates a new Asset from a local file.
+     *
+     * @param string $path File path relative to the configured directory
+     */
+    public static function createFromPath(string $path): self
+    {
+        $config = self::config();
+        $path   = ltrim($path, '/');
+        $file   = new File($config->directory . $path, true);
 
-		// Build the URI
-		$uri = $config->uri . $path;
+        // Build the URI
+        $uri = $config->uri . $path;
 
-		// Append a timestamp if requested
-		if ($config->useTimestamps)
-		{
-			$uri .=  '?v=' . $file->getMTime();
-		}
+        // Append a timestamp if requested
+        if ($config->useTimestamps) {
+            $uri .= '?v=' . $file->getMTime();
+        }
 
-		return self::createFromUri($uri);
-	}
+        return self::createFromUri($uri);
+    }
 
-	/**
-	 * Creates a new Asset from a remote file.
-	 * Note that the framework's link_tag() does not support integrity and crossorigin
-	 * fields, so most CDN assets should be created directly.
-	 *
-	 * @param string $uri
-	 * @param string|null $type One of: 'css', 'js', 'img'; or null to detect from extension
-	 *
-	 * @return self
-	 */
-	public static function createFromUri(string $uri, string $type = null): self
-	{
-		helper(['html']);
+    /**
+     * Creates a new Asset from a remote file.
+     * Note that the framework's link_tag() does not support integrity and crossorigin
+     * fields, so most CDN assets should be created directly.
+     *
+     * @param string|null $type One of: 'css', 'js', 'img'; or null to detect from extension
+     */
+    public static function createFromUri(string $uri, ?string $type = null): self
+    {
+        helper(['html']);
 
-		if ($type === null)
-		{
-			$extension = pathinfo(strtok($uri, '?'), PATHINFO_EXTENSION); // Query safe
+        if ($type === null) {
+            $extension = pathinfo(strtok($uri, '?'), PATHINFO_EXTENSION); // Query safe
 
-			// Check for one of the numerous image extension
-			if (in_array($extension, self::IMAGE_EXTENSIONS))
-			{
-				$type = 'img';
-			}
-			else
-			{
-				$type = $extension;
-			}
-		}
+            // Check for one of the numerous image extension
+            if (in_array($extension, self::IMAGE_EXTENSIONS, true)) {
+                $type = 'img';
+            } else {
+                $type = $extension;
+            }
+        }
 
-		if ($type === 'css')
-		{
-			return new self(link_tag($uri));
-		}
-		if ($type === 'js')
-		{
-			return new self(script_tag($uri), false);
-		}
-		if ($type === 'img')
-		{
-			$alt = ucfirst(pathinfo($uri, PATHINFO_FILENAME)); // Query safe
-			return new self(img($uri, false, ['alt' => $alt]), false);
-		}			
+        if ($type === 'css') {
+            return new self(link_tag($uri));
+        }
+        if ($type === 'js') {
+            return new self(script_tag($uri), false);
+        }
+        if ($type === 'img') {
+            $alt = ucfirst(pathinfo($uri, PATHINFO_FILENAME)); // Query safe
 
-		throw AssetsException::forUnsupportedType($type);
-	}
+            return new self(img($uri, false, ['alt' => $alt]), false);
+        }
 
-	//--------------------------------------------------------------------
-	// Class Methods
-	//--------------------------------------------------------------------
+        throw AssetsException::forUnsupportedType($type);
+    }
 
-	public function __construct(string $tag, bool $head = true)
-	{
-		$this->tag  = $tag;
-		$this->head = $head;
-	}
+    //--------------------------------------------------------------------
+    // Class Methods
+    //--------------------------------------------------------------------
 
-	public function __toString(): string
-	{
-		return $this->tag;
-	}
+    public function __construct(string $tag, bool $head = true)
+    {
+        $this->tag  = $tag;
+        $this->head = $head;
+    }
 
-	public function isHead(): bool
-	{
-		return $this->head;
-	}
+    public function __toString(): string
+    {
+        return $this->tag;
+    }
+
+    public function isHead(): bool
+    {
+        return $this->head;
+    }
 }
