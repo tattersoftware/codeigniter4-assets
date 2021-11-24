@@ -56,7 +56,8 @@ final class RouteBundle extends Bundle
             }
         }
 
-        if (isset($key)) {
+        // Re-check the config in case one of the included items requested cache exemption
+        if ($config->useCache && isset($key)) {
             cache()->save($key, $bundle);
         }
 
