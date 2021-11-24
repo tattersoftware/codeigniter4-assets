@@ -62,26 +62,4 @@ final class RouteBundle extends Bundle
 
         return $bundle;
     }
-
-    /**
-     * Prepares the bundle for caching.
-     *
-     * @return Asset[]
-     */
-    public function __serialize(): array
-    {
-        return $this->getAssets();
-    }
-
-    /**
-     * Prepares the bundle for caching.
-     *
-     * @param Asset[] $data
-     */
-    public function __unserialize(array $data): void
-    {
-        foreach ($data as $asset) {
-            $this->add($asset);
-        }
-    }
 }
