@@ -12,7 +12,7 @@ final class BundleTest extends AssetsTestCase
 {
     public function testConstructorPaths()
     {
-        $bundle              = new class() extends Bundle {
+        $bundle              = new class () extends Bundle {
             protected $paths = ['apple.css'];
         };
 
@@ -25,7 +25,7 @@ final class BundleTest extends AssetsTestCase
 
     public function testConstructorBundles()
     {
-        $bundle                = new class() extends Bundle {
+        $bundle                = new class () extends Bundle {
             protected $bundles = [FruitSalad::class];
         };
 
@@ -38,7 +38,7 @@ final class BundleTest extends AssetsTestCase
 
     public function testConstructorStrings()
     {
-        $bundle                = new class() extends Bundle {
+        $bundle                = new class () extends Bundle {
             protected $strings = ['foobar'];
         };
 
@@ -51,7 +51,7 @@ final class BundleTest extends AssetsTestCase
 
     public function testStringable()
     {
-        $asset               = new class() extends Bundle {
+        $asset               = new class () extends Bundle {
             protected $paths = ['apple.css'];
         };
 
@@ -60,7 +60,7 @@ final class BundleTest extends AssetsTestCase
 
     public function testHead()
     {
-        $asset               = new class() extends Bundle {
+        $asset               = new class () extends Bundle {
             protected $paths = [
                 'apple.css',
                 'banana.js',
@@ -68,5 +68,14 @@ final class BundleTest extends AssetsTestCase
         };
 
         $this->assertSame('<link href="http://example.com/assets/apple.css" rel="stylesheet" type="text/css" />', $asset->head());
+    }
+
+    public function testSerializing()
+    {
+        $bundle = new FruitSalad();
+
+        $result = unserialize(serialize($bundle));
+
+        $this->assertSame($bundle->body(), $result->body());
     }
 }

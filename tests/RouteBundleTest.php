@@ -1,6 +1,5 @@
 <?php
 
-use Tatter\Assets\Asset;
 use Tatter\Assets\Exceptions\AssetsException;
 use Tatter\Assets\RouteBundle;
 use Tests\Support\AssetsTestCase;
@@ -102,16 +101,5 @@ final class RouteBundleTest extends AssetsTestCase
         $this->expectExceptionMessage(lang('Assets.invalidConfigItem', ['']));
 
         RouteBundle::createFromRoute('invalid');
-    }
-
-    public function testSerializing()
-    {
-        $asset1 = new Asset('banana');
-        $asset2 = new Asset('bread', false);
-        $bundle = (new RouteBundle())->add($asset1)->add($asset2);
-
-        $result = unserialize(serialize($bundle));
-
-        $this->assertSame($bundle->body(), $result->body());
     }
 }

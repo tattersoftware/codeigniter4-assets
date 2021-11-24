@@ -176,4 +176,30 @@ abstract class Bundle
 
         return implode(PHP_EOL, $lines);
     }
+
+    //--------------------------------------------------------------------
+    // Caching
+    //--------------------------------------------------------------------
+
+    /**
+     * Prepares the bundle for caching.
+     *
+     * @return Asset[]
+     */
+    public function __serialize(): array
+    {
+        return $this->getAssets();
+    }
+
+    /**
+     * Restores the bundle from cached version.
+     *
+     * @param Asset[] $data
+     */
+    public function __unserialize(array $data): void
+    {
+        foreach ($data as $asset) {
+            $this->add($asset);
+        }
+    }
 }
