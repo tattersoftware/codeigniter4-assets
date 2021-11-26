@@ -32,7 +32,7 @@ abstract class VendorPublisher extends Publisher
             throw new DomainException('Invalid relative destination $path.');
         }
 
-        $this->destination = VendorBundle::base();
+        $this->destination = VendorBundle::base() . ltrim($this->path, '/ ');
 
         if (! is_dir($this->destination)) {
             mkdir($this->destination, 0775, true);

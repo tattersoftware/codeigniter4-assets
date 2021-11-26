@@ -20,14 +20,14 @@ final class VendorTest extends AssetsTestCase
 
     public function testPublisherSetsDestination()
     {
-        // Allow publishing ot the test folder
+        // Allow publishing to the test folder
         config('Publisher')->restrictions[SUPPORTPATH] = '*';
 
         $publisher          = new class () extends VendorPublisher {
             protected $path = 'foobar';
         };
 
-        $this->assertSame(SUPPORTPATH . 'Files/external/', $publisher->getDestination());
+        $this->assertSame(SUPPORTPATH . 'Files/external/foobar/', $publisher->getDestination());
     }
 
     public function testBundleAddsPath()
