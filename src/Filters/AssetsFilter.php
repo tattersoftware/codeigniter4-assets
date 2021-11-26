@@ -26,7 +26,7 @@ class AssetsFilter implements FilterInterface
     }
 
     /**
-     * Renders the menus and injects their content.
+     * Gathers the route-specific assets and adds their tags to the response.
      *
      * @param array|null $arguments
      */

@@ -103,18 +103,18 @@ use Tatter\Assets\Bundle;
 
 class FrontendBundle extends Bundle
 {
-	protected $bundles = [
-		StylesBundle::class,
-	];
+    protected $bundles = [
+        StylesBundle::class,
+    ];
 
-	protected $paths = [
-		'bootstrap/dist/css/bootstrap.min.css',
-		'bootstrap/dist/js/bootstrap.bundle.min.js',
-	];
+    protected $paths = [
+        'bootstrap/dist/css/bootstrap.min.css',
+        'bootstrap/dist/js/bootstrap.bundle.min.js',
+    ];
 
-	protected $uris = [
-		'https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js',
-	];
+    protected $uris = [
+        'https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js',
+    ];
 }
 ```
 
@@ -132,17 +132,17 @@ use Tatter\Assets\Bundle;
 
 class ColorBundle extends Bundle
 {
-	protected function define()
-	{
-		$this
-			->add(Asset::createFromPath('styles.css')) // Add individual Assets
-			->merge($someOtherBundle); // Or combine multiple Bundles
+    protected function define()
+    {
+        $this
+            ->add(Asset::createFromPath('styles.css')) // Add individual Assets
+            ->merge($someOtherBundle); // Or combine multiple Bundles
 
-		// Create more complex Assets
-		$source = '<script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js" type="text/javascript"></script>';
-		$inHead = true; // Force a JavaScript Asset to the <head> tag
-		$asset  = new Asset($source, $inHead);
-	}
+        // Create more complex Assets
+        $source = '<script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js" type="text/javascript"></script>';
+        $inHead = true; // Force a JavaScript Asset to the <head> tag
+        $asset  = new Asset($source, $inHead);
+    }
 }
 ```
 
@@ -159,18 +159,18 @@ use Tatter\Assets\Config\Assets as AssetsConfig;
 
 class Assets extends AssetsConfig
 {
-	public $routes = [
-		'*' => [
-			'bootstrap/bootstrap.min.css',
-			'bootstrap/bootstrap.bundle.min.js',
-			'font-awesome/css/all.min.css',
-			'styles/main.css',
-		],
-		'files' => [
-			'dropzone/dropzone.min.css',
-			'dropzone/dropzone.min.js',
-		],
-	];
+    public $routes = [
+        '*' => [
+            'bootstrap/bootstrap.min.css',
+            'bootstrap/bootstrap.bundle.min.js',
+            'font-awesome/css/all.min.css',
+            'styles/main.css',
+        ],
+        'files' => [
+            'dropzone/dropzone.min.css',
+            'dropzone/dropzone.min.js',
+        ],
+    ];
 }
 ```
 
@@ -192,21 +192,21 @@ Add this module as well:
 Edit your **Filters.php** config file to enable the `AssetsFilter` on all routes:
 
 ```php
-	/**
-	 * List of filter aliases that are always
-	 * applied before and after every request.
-	 *
-	 * @var array
-	 */
-	public $globals = [
-		'before' => [
-			// 'honeypot',
-			// 'csrf',
-		],
-		'after'  => [
-			'assets' => ['except' => 'api/*'],
-		],
-	];
+    /**
+     * List of filter aliases that are always
+     * applied before and after every request.
+     *
+     * @var array
+     */
+    public $globals = [
+        'before' => [
+            // 'honeypot',
+            // 'csrf',
+        ],
+        'after'  => [
+            'assets' => ['except' => 'api/*'],
+        ],
+    ];
 ```
 
 Create a new `Bundle` to define your Bootstrap files in **app/Bundles/DropzoneJS.php**:
@@ -218,10 +218,10 @@ use Tatter\Assets\Bundle;
 
 class DropzoneJS extends Bundle
 {
-	protected $paths = [
-		'dropzone/dropzone.min.css',
-		'dropzone/dropzone.min.js',
-	];
+    protected $paths = [
+        'dropzone/dropzone.min.css',
+        'dropzone/dropzone.min.js',
+    ];
 }
 ```
 
@@ -230,20 +230,20 @@ will load on every route and DropzoneJS will load on specific routes:
 
 ```php
 public $routes = [
-	'*' => [
-		'bootstrap/dist/css/bootstrap.min.css',
-		'bootstrap/dist/js/bootstrap.bundle.min.js',
-	],
-	'files/*' => [
-		\App\Bundles\DropzoneJS::class,
-	],
-	'upload' => [
-		\App\Bundles\DropzoneJS::class,
-	],
+    '*' => [
+        'bootstrap/dist/css/bootstrap.min.css',
+        'bootstrap/dist/js/bootstrap.bundle.min.js',
+    ],
+    'files/*' => [
+        \App\Bundles\DropzoneJS::class,
+    ],
+    'upload' => [
+        \App\Bundles\DropzoneJS::class,
+    ],
 ];
 ```
 
-> Note: We could have made a `Bundle` for Bootstrap as well but since they are only needed for on route this is just as easy.
+> Note: We could have made a `Bundle` for Bootstrap as well but since they are only needed for one route this is just as easy.
 
 If you finished all that then your assets should be injected into your `<head>` and `<body>` tags accordingly.
 
@@ -278,3 +278,65 @@ Your view file:
 </body>
 </html>
 ```
+
+## Vendor Classes
+
+This library includes two abstract class stubs to ease working with third-party assets.
+`VendorPublisher` is a wrapper for the framework's [Publisher Library](https://codeigniter.com/user_guide/libraries/publisher.html)
+primed for use with `Assets`, and `VendorBundle` is a specialized version of this library's
+`Bundle` primed to handle assets published via `VendorPublisher`. Together these two classes
+can take a lot of the work out of managing assets you include from external sources.
+
+Let's revisit the example above... Instead of copies the files into **public/assets/** ourselves
+(and re-copying every time there is an update) let's create a `VendorPublisher` to do that
+for us. In **app/Publishers/BootstrapPublisher.php**:
+```php
+<?php
+
+namespace App\Publishers;
+
+use Tatter\Assets\VendorPublisher;
+
+class BootstrapPublisher extends VendorPublisher
+{
+    protected $source = 'vendor/twbs/bootstrap/dist';
+    protected $path   = 'bootstrap';
+}
+
+```
+
+That's all! `VendorPublisher` knows that `$path` is relative the to directory in your Assets
+config file, so when you run `php spark publish` next all the latest Bootstrap assets will
+be copied into that directory (default: **public/assets/vendor/**).
+
+> Note: Since these are external dependencies be sure to exclude them from your repo with your **.gitignore** file.
+
+Now lets use these assets. We can create a new `VendorBundle` and use the new `addPath()`
+method to access the same files we just published from Composer's vendor directory.
+In **app/Bundles/BootstrapBundle.php**:
+```php
+<?php
+
+namespace App\Bundles;
+
+use Tatter\Assets\VendorBundle;
+
+class BootstrapBundle extends VendorBundle
+{
+    protected function define(): void
+    {
+        $this
+            ->addPath('bootstrap/bootstrap.min.css')
+            ->addPath('bootstrap/bootstrap.bundle.min.js');
+    }
+}
+```
+
+Now add the new bundle to our **app/Config/Assets.php** routes:
+```php
+public $routes = [
+    '*' => [\App\Bundles\BootstrapBundle::class],
+];
+```
+
+And we have hands-free Bootstrap updates from now on!
