@@ -28,6 +28,15 @@ class Assets extends BaseConfig
     public $directory = FCPATH . 'assets/';
 
     /**
+     * Path for third-party published Assets. The path is relative to
+     * both $directory and $uri. Recommended to add the resulting file
+     * path to .gitignore so published vendor assets will not be tracked.
+     *
+     * @var string
+     */
+    public $vendor = 'vendor/';
+
+    /**
      * Whether to append file modification timestamps on asset tags.
      * Makes it less likely for modified assets to remain cached.
      *

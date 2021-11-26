@@ -22,6 +22,7 @@ abstract class AssetsTestCase extends CIUnitTestCase
 
         $this->config                = config(AssetsConfig::class);
         $this->config->directory     = SUPPORTPATH . 'Files/';
+        $this->config->vendor        = 'external/';
         $this->config->useTimestamps = false; // These make testing much harder
 
         Asset::useConfig($this->config);

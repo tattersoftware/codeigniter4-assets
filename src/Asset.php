@@ -52,7 +52,7 @@ final class Asset
     //--------------------------------------------------------------------
 
     /**
-     * Loads and returns the configuration.
+     * Loads, standardizes, and returns the configuration.
      */
     public static function config(): AssetsConfig
     {
@@ -62,6 +62,7 @@ final class Asset
             // Standardize formats
             self::$config->uri       = rtrim(self::$config->uri, '/') . '/';
             self::$config->directory = rtrim(self::$config->directory, '/') . '/';
+            self::$config->vendor    = rtrim(self::$config->vendor, '/') . '/';
         }
 
         return self::$config;
