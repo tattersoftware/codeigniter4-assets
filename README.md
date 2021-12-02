@@ -174,6 +174,13 @@ class Assets extends AssetsConfig
 }
 ```
 
+If you apply the filter via your Routes config file you may also supply bundle class names
+as arguments to merge them with any other configured route bundles:
+```php
+// **app/Config/Routes.php**
+$routes->add('files', 'Files::index', ['filter' => 'assets:\App\Filters\FilesFilter']);
+```
+
 ## Example
 
 You want to make a simple web app for browsing and uploading files, based on Bootstrap's

@@ -6,6 +6,7 @@ use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use Tatter\Assets\Bundle;
 use Tatter\Assets\RouteBundle;
 
 /**
@@ -28,7 +29,7 @@ class AssetsFilter implements FilterInterface
     /**
      * Gathers the route-specific assets and adds their tags to the response.
      *
-     * @param array|null $arguments
+     * @param class-string<Bundle>[]|null $arguments Additional Bundle classes
      */
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null): ?ResponseInterface
     {
@@ -47,7 +48,15 @@ class AssetsFilter implements FilterInterface
             return null;
         }
 
-        $bundle   = RouteBundle::createFromRoute(ltrim($request->getPath(), '/ '));
+        $bundle = RouteBundle::createFromRoute(ltrim($request->getPath(), '/ '));
+
+        // Check for additional Bundles specified in the arguments
+        if (! empty($arguments)) {
+            foreach ($arguments as $class) {
+                $bundle->merge(new $class());
+            }
+        }
+
         $headTags = $bundle->head();
         $bodyTags = $bundle->body();
 
