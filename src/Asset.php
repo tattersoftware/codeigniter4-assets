@@ -60,9 +60,9 @@ final class Asset
             self::$config = config(AssetsConfig::class);
 
             // Standardize formats
-            self::$config->uri       = rtrim(self::$config->uri, '/') . '/';
-            self::$config->directory = rtrim(self::$config->directory, '/') . '/';
-            self::$config->vendor    = rtrim(self::$config->vendor, '/') . '/';
+            self::$config->uri       = rtrim(self::$config->uri, '/\\') . DIRECTORY_SEPARATOR;
+            self::$config->directory = rtrim(self::$config->directory, '/\\') . DIRECTORY_SEPARATOR;
+            self::$config->vendor    = rtrim(self::$config->vendor, '/\\') . DIRECTORY_SEPARATOR;
         }
 
         return self::$config;
@@ -90,7 +90,7 @@ final class Asset
     public static function createFromPath(string $path): self
     {
         $config = self::config();
-        $path   = ltrim($path, '/');
+        $path   = ltrim($path, '/\\');
         $file   = new File($config->directory . $path, true);
 
         // Build the URI
