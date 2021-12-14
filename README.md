@@ -347,3 +347,11 @@ public $routes = [
 ```
 
 And we have hands-free Bootstrap updates from now on!
+
+## Testing
+
+This library includes some PHPUnit extension classes in **src/Test/** to assist with testing
+Assets and Bundles. These are used to test the files from this library but are also available
+for your own libraries and projects to use. Simply extend the appropriate test case and add
+a data provider method with your class name and criteria to meet. See the test files in
+**tests/** for examples.
