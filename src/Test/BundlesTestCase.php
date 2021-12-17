@@ -2,12 +2,12 @@
 
 namespace Tatter\Assets\Test;
 
-use CodeIgniter\Publisher\Publisher;
+use CodeIgniter\Test\CIUnitTestCase;
 use Tatter\Assets\Bundle;
 
-abstract class BundlesTestCase extends TestCase
+abstract class BundlesTestCase extends CIUnitTestCase
 {
-    private $didPublish = false;
+    use AssetsTestTrait;
 
     /**
      * Publishes all files once so they are
@@ -17,14 +17,7 @@ abstract class BundlesTestCase extends TestCase
     {
         parent::setUp();
 
-        // Make sure everything is published
-        if (! $this->didPublish) {
-            foreach (Publisher::discover() as $publisher) {
-                $publisher->publish(); // @codeCoverageIgnore
-            }
-
-            $this->didPublish = true;
-        }
+        $this->publishAll();
     }
 
     /**

@@ -2,10 +2,17 @@
 
 namespace Tests\Support;
 
-use Tatter\Assets\Test\TestCase;
+use CodeIgniter\Test\CIUnitTestCase;
+use Tatter\Assets\Asset;
+use Tatter\Assets\Config\Assets as AssetsConfig;
 
-abstract class AssetsTestCase extends TestCase
+abstract class AssetsTestCase extends CIUnitTestCase
 {
+    /**
+     * @var AssetsConfig
+     */
+    protected $config;
+
     /**
      * Preps the config for the test directory.
      */
@@ -13,7 +20,11 @@ abstract class AssetsTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->config->directory = SUPPORTPATH . 'Files/';
-        $this->config->vendor    = 'external/';
+        $this->config                = config('Assets');
+        $this->config->directory     = SUPPORTPATH . 'Files/';
+        $this->config->vendor        = 'external/';
+        $this->config->useTimestamps = false; // These make testing much harder
+
+        Asset::useConfig($this->config);
     }
 }
