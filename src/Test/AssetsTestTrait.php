@@ -45,7 +45,7 @@ trait AssetsTestTrait
         }
 
         // Create the config
-        $this->config                = config('Assets');
+        $this->config                = new AssetsConfig();
         $this->config->directory     = $this->root->url() . DIRECTORY_SEPARATOR;
         $this->config->useTimestamps = false; // These make testing much harder
 
@@ -64,6 +64,8 @@ trait AssetsTestTrait
             $this->root      = null;
             $this->published = false;
         }
+
+        Asset::useConfig(null);
     }
 
     /**
