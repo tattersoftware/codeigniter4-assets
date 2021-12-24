@@ -2,6 +2,7 @@
 
 namespace Tatter\Assets;
 
+use CodeIgniter\Config\Factories;
 use CodeIgniter\Files\File;
 use Tatter\Assets\Config\Assets as AssetsConfig;
 use Tatter\Assets\Exceptions\AssetsException;
@@ -76,6 +77,9 @@ final class Asset
     public static function useConfig(?AssetsConfig $config)
     {
         self::$config = $config;
+
+        // If a new config was supplied then use it with Factories, otherwise reset to the "vanilla" version
+        Factories::injectMock('config', 'Assets', $config ?? new AssetsConfig());
     }
 
     //--------------------------------------------------------------------

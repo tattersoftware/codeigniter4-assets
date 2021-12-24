@@ -34,7 +34,7 @@ final class AssetTest extends AssetsTestCase
         $result = Asset::config();
 
         $this->assertSame($config, $result);
-        $this->assertNotSame(config(AssetsConfig::class), $result);
+        $this->assertSame(config(AssetsConfig::class), $result);
     }
 
     public function testLoadsConfig()
