@@ -15,8 +15,8 @@ final class BundlesTestCaseTest extends BundlesTestCase
     {
         parent::setUp();
 
-        copy(SUPPORTPATH . 'Files/apple.css', $this->config->directory . 'apple.css');
-        copy(SUPPORTPATH . 'Files/banana.js', $this->config->directory . 'banana.js');
+        copy(SUPPORTPATH . 'Files/apple.css', $this->assets->directory . 'apple.css');
+        copy(SUPPORTPATH . 'Files/banana.js', $this->assets->directory . 'banana.js');
     }
 
     public function bundleProvider(): array

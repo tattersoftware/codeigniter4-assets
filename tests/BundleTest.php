@@ -2,13 +2,13 @@
 
 use Tatter\Assets\Asset;
 use Tatter\Assets\Bundle;
-use Tests\Support\AssetsTestCase;
 use Tests\Support\Bundles\FruitSalad;
+use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-final class BundleTest extends AssetsTestCase
+final class BundleTest extends TestCase
 {
     public function testConstructorPaths()
     {

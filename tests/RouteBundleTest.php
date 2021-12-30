@@ -2,20 +2,20 @@
 
 use Tatter\Assets\Exceptions\AssetsException;
 use Tatter\Assets\RouteBundle;
-use Tests\Support\AssetsTestCase;
 use Tests\Support\Bundles\FruitSalad;
 use Tests\Support\Bundles\LunchBreak;
+use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-final class RouteBundleTest extends AssetsTestCase
+final class RouteBundleTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->config->routes = [
+        $this->assets->routes = [
             '*' => [
                 'https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js',
                 FruitSalad::class,
@@ -51,7 +51,7 @@ final class RouteBundleTest extends AssetsTestCase
             FruitSalad::class,
         ]));
 
-        $this->config->useCache = true;
+        $this->assets->useCache = true;
         $this->assertEmpty(cache()->getCacheInfo());
 
         // Place a fake bundle in the cache
@@ -64,7 +64,7 @@ final class RouteBundleTest extends AssetsTestCase
 
     public function testCreateFromRouteSavesToCache()
     {
-        $this->config->useCache = true;
+        $this->assets->useCache = true;
         $this->assertEmpty(cache()->getCacheInfo());
 
         $result = RouteBundle::createFromRoute('foo');
@@ -74,7 +74,7 @@ final class RouteBundleTest extends AssetsTestCase
 
     public function testCreateFromRouteEmpty()
     {
-        $this->config->routes['*'] = [];
+        $this->assets->routes['*'] = [];
 
         $result = RouteBundle::createFromRoute('foo');
 
@@ -85,7 +85,7 @@ final class RouteBundleTest extends AssetsTestCase
     public function testCreateFromRouteThrowsNotString()
     {
         // @phpstan-ignore-next-line
-        $this->config->routes['invalid'] = [true];
+        $this->assets->routes['invalid'] = [true];
 
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('Config $route items must be strings.');
@@ -95,7 +95,7 @@ final class RouteBundleTest extends AssetsTestCase
 
     public function testCreateFromRouteThrowsInvalidType()
     {
-        $this->config->routes['invalid'] = ['filthyflarmflam'];
+        $this->assets->routes['invalid'] = ['filthyflarmflam'];
 
         $this->expectException(AssetsException::class);
         $this->expectExceptionMessage(lang('Assets.invalidConfigItem', ['']));

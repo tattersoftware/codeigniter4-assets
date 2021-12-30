@@ -17,42 +17,42 @@ use Tatter\Assets\Config\Assets as AssetsConfig;
 trait AssetsTestTrait
 {
     /**
-     * Virtual workspace
+     * The virtual workspace.
      *
      * @var vfsStreamDirectory|null
      */
-    protected $root;
-
-    /**
-     * @var AssetsConfig
-     */
-    protected $config;
+    protected static $root;
 
     /**
      * Whether the publishers have been run.
      *
      * @var bool
      */
-    private $published = false;
+    private static $published = false;
+
+    /**
+     * @var AssetsConfig
+     */
+    protected $assets;
 
     /**
      * Creates the VFS (if necessary) and updates the Assets config.
      */
     protected function setUpAssetsTestTrait(): void
     {
-        if ($this->root === null) {
-            $this->root = vfsStream::setup('root');
+        if (self::$root === null) {
+            self::$root = vfsStream::setup('root');
         }
 
         // Create the config
-        $this->config                = new AssetsConfig();
-        $this->config->directory     = $this->root->url() . DIRECTORY_SEPARATOR;
-        $this->config->useTimestamps = false; // These make testing much harder
+        $this->assets                = new AssetsConfig();
+        $this->assets->directory     = self::$root->url() . DIRECTORY_SEPARATOR;
+        $this->assets->useTimestamps = false; // These make testing much harder
 
-        Asset::useConfig($this->config);
+        Asset::useConfig($this->assets);
 
         // Add VFS as an allowed Publisher directory
-        config('Publisher')->restrictions[$this->config->directory] = '*';
+        config('Publisher')->restrictions[$this->assets->directory] = '*';
     }
 
     /**
@@ -61,8 +61,8 @@ trait AssetsTestTrait
     protected function tearDownAssetsTestTrait(): void
     {
         if (! empty($this->refreshVfs)) {
-            $this->root      = null;
-            $this->published = false;
+            self::$root      = null;
+            self::$published = false;
         }
 
         Asset::useConfig(null);
@@ -74,7 +74,7 @@ trait AssetsTestTrait
      */
     protected function publishAll(): void
     {
-        if ($this->published) {
+        if (self::$published) {
             return;
         }
 
@@ -82,6 +82,6 @@ trait AssetsTestTrait
             $publisher->publish();
         }
 
-        $this->published = true;
+        self::$published = true;
     }
 }
