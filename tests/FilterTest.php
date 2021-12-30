@@ -11,7 +11,7 @@ use Tests\Support\Bundles\LunchBreak;
 /**
  * @internal
  */
-final class FilterTest extends AssetsTestCase
+final class FilterTest extends TestCase
 {
     use FilterTestTrait;
 
@@ -33,7 +33,7 @@ final class FilterTest extends AssetsTestCase
     {
         parent::setUp();
 
-        $this->config->routes = [
+        $this->assets->routes = [
             '*' => [
                 'https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js',
                 FruitSalad::class,
@@ -102,7 +102,7 @@ final class FilterTest extends AssetsTestCase
 
     public function testEmptyTags()
     {
-        $this->config->routes = [];
+        $this->assets->routes = [];
 
         $caller = $this->getFilterCaller(AssetsFilter::class, 'after');
 

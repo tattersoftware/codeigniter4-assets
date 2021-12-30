@@ -3,12 +3,12 @@
 use Tatter\Assets\Asset;
 use Tatter\Assets\Config\Assets as AssetsConfig;
 use Tatter\Assets\Exceptions\AssetsException;
-use Tests\Support\AssetsTestCase;
+use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-final class AssetTest extends AssetsTestCase
+final class AssetTest extends TestCase
 {
     public function testStringable()
     {
@@ -48,9 +48,9 @@ final class AssetTest extends AssetsTestCase
 
     public function testUseTimestamps()
     {
-        $this->config->useTimestamps = true;
+        $this->assets->useTimestamps = true;
 
-        $mtime    = filemtime($this->config->directory . 'apple.css');
+        $mtime    = filemtime($this->assets->directory . 'apple.css');
         $expected = '<link href="http://example.com/assets/apple.css?v=' . $mtime . '" rel="stylesheet" type="text/css" />';
         $asset    = Asset::createFromPath('apple.css');
 

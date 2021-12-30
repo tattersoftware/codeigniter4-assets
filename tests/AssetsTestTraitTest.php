@@ -14,7 +14,7 @@ final class AssetsTestTraitTest extends CIUnitTestCase
 
     public function testPublishesOnce()
     {
-        $file = $this->config->directory . $this->config->vendor . 'fruit/third_party.js';
+        $file = $this->assets->directory . $this->assets->vendor . 'fruit/third_party.js';
 
         $this->publishAll();
         $this->assertFileExists($file);
@@ -27,12 +27,10 @@ final class AssetsTestTraitTest extends CIUnitTestCase
 
     public function testTearDownRefreshes()
     {
-        $this->assertNotNull($this->root);
+        $this->assertNotNull(self::$root);
 
         $this->refreshVfs = true;
         $this->tearDownAssetsTestTrait();
-        $this->assertNull($this->root);
-
-        $this->refreshVfs = false;
+        $this->assertNull(self::$root);
     }
 }
