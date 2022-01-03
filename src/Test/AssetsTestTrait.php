@@ -40,7 +40,7 @@ trait AssetsTestTrait
      */
     protected function setUpAssetsTestTrait(): void
     {
-        if (self::$root === null) {
+        if (! empty($this->refreshVfs) || self::$root === null) {
             self::$root = vfsStream::setup('root');
         }
 
