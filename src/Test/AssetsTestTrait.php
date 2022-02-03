@@ -18,22 +18,15 @@ trait AssetsTestTrait
 {
     /**
      * The virtual workspace.
-     *
-     * @var vfsStreamDirectory|null
      */
-    protected static $root;
+    protected static ?vfsStreamDirectory $root = null;
 
     /**
      * Whether the publishers have been run.
-     *
-     * @var bool
      */
-    private static $published = false;
+    private static bool $published = false;
 
-    /**
-     * @var AssetsConfig
-     */
-    protected $assets;
+    protected AssetsConfig $assets;
 
     /**
      * Creates the VFS (if necessary) and updates the Assets config.

@@ -21,11 +21,16 @@
         }
     ],
     "require": {
-        "php": "^7.3 || ^8.0"
+        "php": "^7.4 || ^8.0"
     },
     "require-dev": {
-        "codeigniter4/codeigniter4": "dev-develop",
-        "tatter/tools": "^1.15"
+        "codeigniter4/devkit": "^1.0",
+        "codeigniter4/framework": "^4.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     },
     "autoload": {
         "psr-4": {
@@ -40,12 +45,6 @@
             "Tests\\Support\\": "tests/_support"
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/codeigniter4/CodeIgniter4"
-        }
-    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
@@ -56,11 +55,13 @@
             "@analyze",
             "@test",
             "@inspect",
+            "rector process",
             "@style"
         ],
         "deduplicate": "phpcpd app/ src/",
         "inspect": "deptrac analyze --cache-file=build/deptrac.cache",
         "mutate": "infection --threads=2 --skip-initial-tests --coverage=build/phpunit",
+        "retool": "retool",
         "style": "php-cs-fixer fix --verbose --ansi --using-cache=no",
         "test": "phpunit"
     }

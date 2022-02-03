@@ -14,42 +14,32 @@ class Assets extends BaseConfig
 
     /**
      * Asset URI base, relative to baseURL.
-     *
-     * @var string
      */
-    public $uri = 'assets/';
+    public string $uri = 'assets/';
 
     /**
      * Asset storage location in the filesystem.
      * Must be somewhere web accessible.
-     *
-     * @var string
      */
-    public $directory = FCPATH . 'assets/';
+    public string $directory = FCPATH . 'assets/';
 
     /**
      * Path for third-party published Assets. The path is relative to
      * both $directory and $uri. Recommended to add the resulting file
      * path to .gitignore so published vendor assets will not be tracked.
-     *
-     * @var string
      */
-    public $vendor = 'vendor/';
+    public string $vendor = 'vendor/';
 
     /**
      * Whether to append file modification timestamps on asset tags.
      * Makes it less likely for modified assets to remain cached.
-     *
-     * @var bool
      */
-    public $useTimestamps = true;
+    public bool $useTimestamps = true;
 
     /**
      * Whether to cache bundles for faster route responses.
-     *
-     * @var bool
      */
-    public $useCache = ENVIRONMENT === 'production';
+    public bool $useCache = ENVIRONMENT === 'production';
 
     //--------------------------------------------------------------------
     // Route Assets
@@ -77,7 +67,7 @@ class Assets extends BaseConfig
      *
      * @var array<string,string[]>
      */
-    public $routes = [];
+    public array $routes = [];
 
     /**
      * Gathers Assets and Bundles that match the relative URI path.

@@ -31,10 +31,10 @@ final class RouteBundleTest extends TestCase
     {
         $expected = <<<'EOD'
             <script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js" type="text/javascript"></script>
-            <link href="http://example.com/assets/apple.css" rel="stylesheet" type="text/css" />
-            <script src="http://example.com/assets/banana.js" type="text/javascript"></script>
+            <link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />
+            <script src="https://example.com/assets/banana.js" type="text/javascript"></script>
             <link href="https://water.com/glassof.css" rel="stylesheet" type="text/css" />
-            <script src="http://example.com/assets/directory/machines.js" type="text/javascript"></script>
+            <script src="https://example.com/assets/directory/machines.js" type="text/javascript"></script>
             EOD;
 
         $result = RouteBundle::createFromRoute('admin/foo');
@@ -67,7 +67,7 @@ final class RouteBundleTest extends TestCase
         $this->assets->useCache = true;
         $this->assertEmpty(cache()->getCacheInfo());
 
-        $result = RouteBundle::createFromRoute('foo');
+        RouteBundle::createFromRoute('foo');
 
         $this->assertNotEmpty(cache()->getCacheInfo());
     }
@@ -84,7 +84,6 @@ final class RouteBundleTest extends TestCase
 
     public function testCreateFromRouteThrowsNotString()
     {
-        // @phpstan-ignore-next-line
         $this->assets->routes['invalid'] = [true];
 
         $this->expectException('InvalidArgumentException');

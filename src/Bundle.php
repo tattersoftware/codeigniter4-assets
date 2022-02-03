@@ -23,35 +23,35 @@ abstract class Bundle
      *
      * @var Asset[]
      */
-    protected $assets = [];
+    protected array $assets = [];
 
     /**
      * Bundle classes to merge with this Bundle.
      *
      * @var string[]
      */
-    protected $bundles = [];
+    protected array $bundles = [];
 
     /**
      * Paths to include in this Bundle.
      *
      * @var string[]
      */
-    protected $paths = [];
+    protected array $paths = [];
 
     /**
      * URIs to include in this Bundle.
      *
      * @var string[]
      */
-    protected $uris = [];
+    protected array $uris = [];
 
     /**
      * Strings to include in this Bundle.
      *
      * @var string[]
      */
-    protected $strings = [];
+    protected array $strings = [];
 
     //--------------------------------------------------------------------
     // Asset Handling
@@ -105,8 +105,6 @@ abstract class Bundle
 
     /**
      * Merges Assets from another Bundle.
-     *
-     * @param self $bundle
      *
      * @return $this
      */

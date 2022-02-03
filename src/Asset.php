@@ -29,24 +29,17 @@ final class Asset
         'webp',
     ];
 
-    /**
-     * @var AssetsConfig|null
-     */
-    private static $config;
+    private static ?AssetsConfig $config = null;
 
     /**
      * Asset content, ready for injection.
-     *
-     * @var string
      */
-    private $tag;
+    private string $tag;
 
     /**
      * Whether the content should be placed in the head tag.
-     *
-     * @var bool
      */
-    private $head;
+    private bool $head;
 
     //--------------------------------------------------------------------
     // Configuration
@@ -123,11 +116,7 @@ final class Asset
             $extension = pathinfo(strtok($uri, '?'), PATHINFO_EXTENSION); // Query safe
 
             // Check for one of the numerous image extension
-            if (in_array($extension, self::IMAGE_EXTENSIONS, true)) {
-                $type = 'img';
-            } else {
-                $type = $extension;
-            }
+            $type = in_array($extension, self::IMAGE_EXTENSIONS, true) ? 'img' : $extension;
         }
 
         if ($type === 'css') {
