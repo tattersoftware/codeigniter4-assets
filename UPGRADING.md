@@ -5,6 +5,8 @@
 
 > Note: This is a complete refactor! Please be sure to read the docs carefully before upgrading.
 
+* Minimum PHP version has been bumped to `7.4` to match the upcoming framework changes
+* All properties that can be typed have been
 * The services no longer exist; remove all references to `Services::Assets` and `Services::manifests` to avoid exceptions
 * This library no longer publishes Assets; convert Manifests to the framework's new [Publisher format](https://codeigniter.com/user_guide/libraries/publisher.html)
 * Many of the example Manifests now have an official Publisher equivalent at [Tatter\Frontend](https://github.com/tattersoftware/codeigniter4-frontend)

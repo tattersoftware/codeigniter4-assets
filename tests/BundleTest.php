@@ -12,8 +12,8 @@ final class BundleTest extends TestCase
 {
     public function testConstructorPaths()
     {
-        $bundle              = new class () extends Bundle {
-            protected $paths = ['apple.css'];
+        $bundle                    = new class () extends Bundle {
+            protected array $paths = ['apple.css'];
         };
 
         $assets = $bundle->getAssets();
@@ -25,8 +25,8 @@ final class BundleTest extends TestCase
 
     public function testConstructorBundles()
     {
-        $bundle                = new class () extends Bundle {
-            protected $bundles = [FruitSalad::class];
+        $bundle                      = new class () extends Bundle {
+            protected array $bundles = [FruitSalad::class];
         };
 
         $assets = $bundle->getAssets();
@@ -38,8 +38,8 @@ final class BundleTest extends TestCase
 
     public function testConstructorStrings()
     {
-        $bundle                = new class () extends Bundle {
-            protected $strings = ['foobar'];
+        $bundle                      = new class () extends Bundle {
+            protected array $strings = ['foobar'];
         };
 
         $assets = $bundle->getAssets();
@@ -51,8 +51,8 @@ final class BundleTest extends TestCase
 
     public function testStringable()
     {
-        $asset               = new class () extends Bundle {
-            protected $paths = ['apple.css'];
+        $asset                     = new class () extends Bundle {
+            protected array $paths = ['apple.css'];
         };
 
         $this->assertSame('<link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />', (string) $asset);
@@ -60,8 +60,8 @@ final class BundleTest extends TestCase
 
     public function testHead()
     {
-        $asset               = new class () extends Bundle {
-            protected $paths = [
+        $asset                     = new class () extends Bundle {
+            protected array $paths = [
                 'apple.css',
                 'banana.js',
             ];

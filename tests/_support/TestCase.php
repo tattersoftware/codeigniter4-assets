@@ -8,10 +8,7 @@ use Tatter\Assets\Config\Assets as AssetsConfig;
 
 abstract class TestCase extends CIUnitTestCase
 {
-    /**
-     * @var AssetsConfig
-     */
-    protected $assets;
+    protected AssetsConfig $assets;
 
     /**
      * Preps the config for the test directory.

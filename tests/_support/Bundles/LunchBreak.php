@@ -11,7 +11,7 @@ class LunchBreak extends Bundle
      *
      * @var string[]
      */
-    protected $paths = [
+    protected array $paths = [
         'banana.js',
         'directory/machines.js',
     ];
@@ -21,7 +21,7 @@ class LunchBreak extends Bundle
      *
      * @var string[]
      */
-    protected $uris = [
+    protected array $uris = [
         'https://water.com/glassof.css',
     ];
 }

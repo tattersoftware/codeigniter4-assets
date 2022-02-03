@@ -11,7 +11,7 @@ class FruitSalad extends Bundle
      *
      * @var string[]
      */
-    protected $paths = [
+    protected array $paths = [
         'apple.css',
         'banana.js',
     ];
