@@ -106,8 +106,6 @@ abstract class Bundle
     /**
      * Merges Assets from another Bundle.
      *
-     * @param self $bundle
-     *
      * @return $this
      */
     final public function merge(Bundle $bundle)

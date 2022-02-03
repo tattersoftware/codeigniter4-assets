@@ -15,10 +15,7 @@ final class FilterTest extends TestCase
 {
     use FilterTestTrait;
 
-    /**
-     * @var string
-     */
-    private $body = <<<'EOD'
+    private string $body = <<<'EOD'
         <html>
         <head>
         	<title>Test</title>
@@ -54,12 +51,12 @@ final class FilterTest extends TestCase
             <html>
             <head>
             	<title>Test</title>
-            <link href="http://example.com/assets/apple.css" rel="stylesheet" type="text/css" />
+            <link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />
             </head>
             <body>
             	<h1>Hello</h1>
             <script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js" type="text/javascript"></script>
-            <script src="http://example.com/assets/banana.js" type="text/javascript"></script>
+            <script src="https://example.com/assets/banana.js" type="text/javascript"></script>
             </body>
             </html>
             EOD;
@@ -79,14 +76,14 @@ final class FilterTest extends TestCase
             <html>
             <head>
             	<title>Test</title>
-            <link href="http://example.com/assets/apple.css" rel="stylesheet" type="text/css" />
+            <link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />
             <link href="https://water.com/glassof.css" rel="stylesheet" type="text/css" />
             </head>
             <body>
             	<h1>Hello</h1>
             <script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js" type="text/javascript"></script>
-            <script src="http://example.com/assets/banana.js" type="text/javascript"></script>
-            <script src="http://example.com/assets/directory/machines.js" type="text/javascript"></script>
+            <script src="https://example.com/assets/banana.js" type="text/javascript"></script>
+            <script src="https://example.com/assets/directory/machines.js" type="text/javascript"></script>
             </body>
             </html>
             EOD;

@@ -55,7 +55,7 @@ final class BundleTest extends TestCase
             protected $paths = ['apple.css'];
         };
 
-        $this->assertSame('<link href="http://example.com/assets/apple.css" rel="stylesheet" type="text/css" />', (string) $asset);
+        $this->assertSame('<link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />', (string) $asset);
     }
 
     public function testHead()
@@ -67,7 +67,7 @@ final class BundleTest extends TestCase
             ];
         };
 
-        $this->assertSame('<link href="http://example.com/assets/apple.css" rel="stylesheet" type="text/css" />', $asset->head());
+        $this->assertSame('<link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />', $asset->head());
     }
 
     public function testSerializing()
