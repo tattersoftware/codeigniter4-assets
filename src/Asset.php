@@ -54,7 +54,7 @@ final class Asset
             self::$config = config(AssetsConfig::class);
 
             // Standardize formats
-            self::$config->uri       = rtrim(self::$config->uri, '/\\') . DIRECTORY_SEPARATOR;
+            self::$config->uri       = rtrim(self::$config->uri, '/\\') . '/';
             self::$config->directory = rtrim(self::$config->directory, '/\\') . DIRECTORY_SEPARATOR;
             self::$config->vendor    = rtrim(self::$config->vendor, '/\\') . DIRECTORY_SEPARATOR;
         }
