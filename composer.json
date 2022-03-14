@@ -24,8 +24,8 @@
         "php": "^7.4 || ^8.0"
     },
     "require-dev": {
-        "codeigniter4/devkit": "^1.0",
-        "codeigniter4/framework": "^4.1"
+        "codeigniter4/framework": "^4.1",
+        "tatter/tools": "^2.0"
     },
     "config": {
         "allow-plugins": {
