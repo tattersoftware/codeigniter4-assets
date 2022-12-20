@@ -50,7 +50,7 @@ You may use the `Asset` class to build a tag for a single asset file:
 use Tatter\Assets\Asset;
 
 $asset = new Asset('<link href="/assets/styles.css" rel="stylesheet" type="text/css" />');
-echo view('main', ['assset' => $asset]);
+echo view('main', ['asset' => $asset]);
 ```
 ... then in your view file:
 
