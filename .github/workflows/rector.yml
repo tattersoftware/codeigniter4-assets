@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['7.4', '8.0', '8.1']
+        php-versions: ['7.4', '8.0', '8.1', '8.2']
 
     steps:
       - name: Checkout
@@ -40,22 +40,20 @@ jobs:
           extensions: intl, json, mbstring, xml
           coverage: none
         env:
-          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get composer cache directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+        run: echo "COMPOSER_CACHE_FILES_DIR=$(composer config cache-files-dir)" >> $GITHUB_ENV
 
       - name: Cache composer dependencies
         uses: actions/cache@v3
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: ${{ env.COMPOSER_CACHE_FILES_DIR }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
         run: |
-          composer -q config -g github-oauth.github.com "${{ secrets.GITHUB_TOKEN }}"
           if [ -f composer.lock ]; then
             composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
           else
@@ -63,6 +61,4 @@ jobs:
           fi
 
       - name: Analyze for refactoring
-        run: |
-          composer global require --dev rector/rector:^0.12.16
-          rector process --dry-run --no-progress-bar
+        run: vendor/bin/rector process --dry-run --no-progress-bar

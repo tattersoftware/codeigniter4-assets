@@ -51,17 +51,17 @@ final class FilterTest extends TestCase
             <html>
             <head>
             	<title>Test</title>
-            <link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />
+            <link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css">
             </head>
             <body>
             	<h1>Hello</h1>
-            <script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js" type="text/javascript"></script>
-            <script src="https://example.com/assets/banana.js" type="text/javascript"></script>
+            <script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js"></script>
+            <script src="https://example.com/assets/banana.js"></script>
             </body>
             </html>
             EOD;
 
-        $this->request->setPath('foobar');
+        // $this->request->setPath('foobar');
 
         $caller = $this->getFilterCaller(AssetsFilter::class, 'after');
         $result = $caller();
@@ -76,19 +76,19 @@ final class FilterTest extends TestCase
             <html>
             <head>
             	<title>Test</title>
-            <link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />
-            <link href="https://water.com/glassof.css" rel="stylesheet" type="text/css" />
+            <link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css">
+            <link href="https://water.com/glassof.css" rel="stylesheet" type="text/css">
             </head>
             <body>
             	<h1>Hello</h1>
-            <script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js" type="text/javascript"></script>
-            <script src="https://example.com/assets/banana.js" type="text/javascript"></script>
-            <script src="https://example.com/assets/directory/machines.js" type="text/javascript"></script>
+            <script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js"></script>
+            <script src="https://example.com/assets/banana.js"></script>
+            <script src="https://example.com/assets/directory/machines.js"></script>
             </body>
             </html>
             EOD;
 
-        $this->request->setPath('foobar');
+        // $this->request->setPath('foobar');
 
         $caller = $this->getFilterCaller(AssetsFilter::class, 'after');
         $result = $caller([LunchBreak::class]);

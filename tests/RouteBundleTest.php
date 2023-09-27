@@ -30,11 +30,11 @@ final class RouteBundleTest extends TestCase
     public function testCreateFromRoute()
     {
         $expected = <<<'EOD'
-            <script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js" type="text/javascript"></script>
-            <link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />
-            <script src="https://example.com/assets/banana.js" type="text/javascript"></script>
-            <link href="https://water.com/glassof.css" rel="stylesheet" type="text/css" />
-            <script src="https://example.com/assets/directory/machines.js" type="text/javascript"></script>
+            <script src="https://pagecdn.io/lib/cleave/1.6.0/cleave.min.js"></script>
+            <link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css">
+            <script src="https://example.com/assets/banana.js"></script>
+            <link href="https://water.com/glassof.css" rel="stylesheet" type="text/css">
+            <script src="https://example.com/assets/directory/machines.js"></script>
             EOD;
 
         $result = RouteBundle::createFromRoute('admin/foo');
