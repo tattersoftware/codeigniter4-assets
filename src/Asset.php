@@ -51,7 +51,7 @@ final class Asset
     public static function config(): AssetsConfig
     {
         if (self::$config === null) {
-            self::$config = config(AssetsConfig::class);
+            self::$config = config('Assets');
 
             // Standardize formats
             self::$config->uri       = rtrim(self::$config->uri, '/\\') . '/';
