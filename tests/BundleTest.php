@@ -12,7 +12,7 @@ final class BundleTest extends TestCase
 {
     public function testConstructorPaths()
     {
-        $bundle                    = new class () extends Bundle {
+        $bundle = new class () extends Bundle {
             protected array $paths = ['apple.css'];
         };
 
@@ -25,7 +25,7 @@ final class BundleTest extends TestCase
 
     public function testConstructorBundles()
     {
-        $bundle                      = new class () extends Bundle {
+        $bundle = new class () extends Bundle {
             protected array $bundles = [FruitSalad::class];
         };
 
@@ -38,7 +38,7 @@ final class BundleTest extends TestCase
 
     public function testConstructorStrings()
     {
-        $bundle                      = new class () extends Bundle {
+        $bundle = new class () extends Bundle {
             protected array $strings = ['foobar'];
         };
 
@@ -51,23 +51,23 @@ final class BundleTest extends TestCase
 
     public function testStringable()
     {
-        $asset                     = new class () extends Bundle {
+        $asset = new class () extends Bundle {
             protected array $paths = ['apple.css'];
         };
 
-        $this->assertSame('<link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />', (string) $asset);
+        $this->assertSame('<link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css">', (string) $asset);
     }
 
     public function testHead()
     {
-        $asset                     = new class () extends Bundle {
+        $asset = new class () extends Bundle {
             protected array $paths = [
                 'apple.css',
                 'banana.js',
             ];
         };
 
-        $this->assertSame('<link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css" />', $asset->head());
+        $this->assertSame('<link href="https://example.com/assets/apple.css" rel="stylesheet" type="text/css">', $asset->head());
     }
 
     public function testSerializing()

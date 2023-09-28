@@ -57,6 +57,7 @@ final class RouteBundle extends Bundle
         }
 
         // Re-check the config in case one of the included items requested cache exemption
+        // @phpstan-ignore-next-line
         if ($config->useCache && isset($key)) {
             cache()->save($key, $bundle);
         }

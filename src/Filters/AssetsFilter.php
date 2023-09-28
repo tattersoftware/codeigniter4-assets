@@ -48,7 +48,12 @@ class AssetsFilter implements FilterInterface
             return null;
         }
 
-        $bundle = RouteBundle::createFromRoute(ltrim($request->getPath(), '/ '));
+        // Determine the path
+        $uri  = $request->getUri();
+        $path = method_exists($uri, 'getRoutePath')
+            ? $uri->getRoutePath()
+            : ltrim($uri->getPath());
+        $bundle = RouteBundle::createFromRoute($path);
 
         // Check for additional Bundles specified in the arguments
         if (! empty($arguments)) {
